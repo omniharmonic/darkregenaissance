@@ -9,13 +9,8 @@ export function OptimizedForest() {
   const sceneRef = useRef<THREE.Group>(null);
   const veinsRef = useRef<THREE.Group>(null);
 
-  // Load forest with error handling and optimization
-  let forest: any = null;
-  try {
-    forest = useLoader(GLTFLoader, '/models/scene.gltf');
-  } catch (error) {
-    console.log('Forest model loading...');
-  }
+  // Load forest model
+  const forest = useLoader(GLTFLoader, '/models/scene.gltf');
 
   // Create vein effect using simple geometry + shaders (much more performant)
   const veinMaterial = useMemo(() => {
@@ -188,40 +183,12 @@ export function OptimizedForest() {
 
       <group ref={sceneRef}>
 
-        {/* Forest model (if loaded) */}
-        {forest && (
-          <primitive
-            object={forest.scene.clone()}
-            scale={[1, 1, 1]}
-            position={[0, -1, 0]}
-          />
-        )}
-
-        {/* Fallback simple trees if model doesn't load */}
-        {!forest && (
-          <group>
-            {[...Array(6)].map((_, i) => {
-              const angle = (i / 6) * Math.PI * 2;
-              const radius = 4 + Math.random() * 3;
-              const x = Math.cos(angle) * radius;
-              const z = Math.sin(angle) * radius;
-              const height = 3 + Math.random() * 2;
-
-              return (
-                <group key={i} position={[x, height/2 - 1, z]}>
-                  <mesh>
-                    <cylinderGeometry args={[0.1, 0.15, height, 8]} />
-                    <meshStandardMaterial color="#2d3d2d" />
-                  </mesh>
-                  <mesh position={[0, height * 0.3, 0]}>
-                    <coneGeometry args={[height * 0.4, height * 0.6, 8]} />
-                    <meshStandardMaterial color="#3d4d3d" />
-                  </mesh>
-                </group>
-              );
-            })}
-          </group>
-        )}
+        {/* Forest model */}
+        <primitive
+          object={forest.scene.clone()}
+          scale={[1, 1, 1]}
+          position={[0, -1, 0]}
+        />
 
         {/* Mycelium ground glow */}
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.95, 0]}>

@@ -3,7 +3,6 @@
 import { useRef, useMemo, useEffect } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import * as THREE from 'three';
 
 export function DarkForestScene() {
@@ -13,14 +12,6 @@ export function DarkForestScene() {
 
   // Load the forest model
   const forest = useLoader(GLTFLoader, '/models/scene.gltf');
-
-  // Load mycelium model with error handling
-  let myceliumModel: THREE.Group | null = null;
-  try {
-    myceliumModel = useLoader(FBXLoader, '/models/5mc-column-cells.fbx');
-  } catch (error) {
-    console.log('Mycelium model loading...');
-  }
 
   // Create pulsing lights that flow up from mycelium through trees
   const pulsingLights = useMemo(() => {
@@ -60,17 +51,6 @@ export function DarkForestScene() {
     }
 
     return lights;
-  }, []);
-
-  // Create mycelium glow material
-  const myceliumMaterial = useMemo(() => {
-    return new THREE.MeshBasicMaterial({
-      color: '#2d5f3f',
-      transparent: true,
-      opacity: 0.6,
-      emissive: '#1a3f2f',
-      emissiveIntensity: 0.3
-    });
   }, []);
 
   // Enhanced forest material with emissive capability
@@ -130,8 +110,8 @@ export function DarkForestScene() {
 
     // Animate the flowing lights
     if (lightsRef.current) {
-      pulsingLights.forEach((flow, flowIndex) => {
-        flow.flowLights.forEach((lightData, lightIndex) => {
+      pulsingLights.forEach((flow) => {
+        flow.flowLights.forEach((lightData) => {
           const { light, flowIndex: fIndex, phase } = lightData;
 
           // Create wave effect that flows from bottom to top
@@ -181,17 +161,8 @@ export function DarkForestScene() {
           position={[0, -1, 0]}
         />
 
-        {/* Mycelium model */}
-        {myceliumModel && (
-          <group ref={myceliumRef}>
-            <primitive
-              object={myceliumModel.clone()}
-              scale={[1, 1, 1]}
-              position={[0, -1.2, 0]}
-              material={myceliumMaterial}
-            />
-          </group>
-        )}
+        {/* Mycelium placeholder - can be added later */}
+        <group ref={myceliumRef} />
 
         {/* Pulsing light flows */}
         <group ref={lightsRef}>

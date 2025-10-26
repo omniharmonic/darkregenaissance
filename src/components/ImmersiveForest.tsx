@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef, useMemo, useEffect } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import * as THREE from 'three';
 
 export function ImmersiveForest() {
@@ -13,22 +12,6 @@ export function ImmersiveForest() {
 
   // Load the main forest model
   const forest = useLoader(GLTFLoader, '/models/scene.gltf');
-
-  // Load mycelium models (with error handling)
-  let myceliumModel: THREE.Group | null = null;
-  let cellsModel: THREE.Group | null = null;
-
-  try {
-    myceliumModel = useLoader(FBXLoader, '/models/naturalconnection4.fbx');
-  } catch (error) {
-    console.log('Mycelium model not available, using procedural generation');
-  }
-
-  try {
-    cellsModel = useLoader(FBXLoader, '/models/5mc-column-cells.fbx');
-  } catch (error) {
-    console.log('Cells model not available, using procedural generation');
-  }
 
   // Create flowing light paths for mycelial networks
   const mycelialFlows = useMemo(() => {
@@ -219,24 +202,8 @@ export function ImmersiveForest() {
           <primitive object={groundGlowMaterial} />
         </mesh>
 
-        {/* Mycelium models if available */}
-        <group ref={myceliumRef}>
-          {myceliumModel && (
-            <primitive
-              object={myceliumModel.clone()}
-              scale={[1.5, 1.5, 1.5]}
-              position={[0, -0.8, 0]}
-            />
-          )}
-
-          {cellsModel && (
-            <primitive
-              object={cellsModel.clone()}
-              scale={[0.8, 0.8, 0.8]}
-              position={[0, -0.5, 0]}
-            />
-          )}
-        </group>
+        {/* Mycelium placeholder - can be added later */}
+        <group ref={myceliumRef} />
 
         {/* Flowing mycelial networks */}
         <group ref={flowLinesRef}>

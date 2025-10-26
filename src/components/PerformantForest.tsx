@@ -3,7 +3,6 @@
 import { useRef, useMemo, useEffect } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import * as THREE from 'three';
 
 export function PerformantForest() {
@@ -13,14 +12,6 @@ export function PerformantForest() {
 
   // Load the actual forest model
   const forest = useLoader(GLTFLoader, '/models/scene.gltf');
-
-  // Load mycelium model
-  let myceliumModel: THREE.Group | null = null;
-  try {
-    myceliumModel = useLoader(FBXLoader, '/models/5mc-column-cells.fbx');
-  } catch (error) {
-    console.log('Mycelium model loading...');
-  }
 
   // Highly optimized flowing lights (performance critical)
   const veinLights = useMemo(() => {
@@ -208,16 +199,8 @@ export function PerformantForest() {
           position={[0, -1, 0]}
         />
 
-        {/* High quality mycelium model */}
-        {myceliumModel && (
-          <group ref={myceliumRef}>
-            <primitive
-              object={myceliumModel.clone()}
-              scale={[1, 1, 1]}
-              position={[0, -1.2, 0]}
-            />
-          </group>
-        )}
+        {/* Mycelium placeholder - can be added later */}
+        <group ref={myceliumRef} />
 
         {/* Optimized flowing vein lights */}
         <group ref={flowLightsRef}>
