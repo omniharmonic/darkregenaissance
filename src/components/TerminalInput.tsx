@@ -27,7 +27,7 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[#00ff41] text-sm shrink-0">{'>'}</span>
+      <span className="text-[#00ff41] text-xs md:text-sm shrink-0">{'>'}</span>
       <div className="flex-1 relative">
         <input
           ref={inputRef}
@@ -37,13 +37,13 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
           onKeyDown={handleKeyDown}
           disabled={disabled}
           placeholder={disabled ? "processing..." : "speak your truth..."}
-          className="w-full bg-transparent text-[#00ff41] text-sm border-none outline-none placeholder-[#2d5f3f] caret-[#00ff41]"
+          className="w-full bg-transparent text-[#00ff41] text-xs md:text-sm border-none outline-none placeholder-[#2d5f3f] caret-[#00ff41]"
           autoFocus
         />
 
         {/* Blinking cursor when focused */}
         {input === '' && !disabled && (
-          <span className="absolute left-0 top-0 text-[#00ff41] text-sm animate-pulse pointer-events-none">
+          <span className="absolute left-0 top-0 text-[#00ff41] text-xs md:text-sm animate-pulse pointer-events-none">
             |
           </span>
         )}
@@ -52,7 +52,7 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
       {input.trim() && !disabled && (
         <button
           onClick={handleSend}
-          className="text-[#00ff41] hover:text-[#6bffb8] transition-colors text-xs px-2 py-1 border border-[#00ff41]/30 rounded hover:border-[#6bffb8]/50"
+          className="text-[#00ff41] hover:text-[#6bffb8] active:text-[#6bffb8] transition-colors text-xs px-2 py-1 md:px-3 md:py-1 border border-[#00ff41]/30 rounded hover:border-[#6bffb8]/50 active:border-[#6bffb8]/50 touch-manipulation"
         >
           send
         </button>
