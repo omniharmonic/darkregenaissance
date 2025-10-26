@@ -92,22 +92,6 @@ export function DarkForestScene() {
       sceneRef.current.rotation.y = time * 0.002;
     }
 
-    // Pulse mycelium
-    if (myceliumRef.current) {
-      const pulse = Math.sin(time * 1.5) * 0.1 + 1.0;
-      myceliumRef.current.scale.setScalar(pulse);
-
-      // Update mycelium emissive intensity
-      myceliumRef.current.traverse((child) => {
-        if (child instanceof THREE.Mesh && child.material) {
-          const material = child.material as THREE.MeshBasicMaterial;
-          if (material.emissive) {
-            material.emissiveIntensity = 0.2 + Math.sin(time * 2) * 0.15;
-          }
-        }
-      });
-    }
-
     // Animate the flowing lights
     if (lightsRef.current) {
       pulsingLights.forEach((flow) => {
