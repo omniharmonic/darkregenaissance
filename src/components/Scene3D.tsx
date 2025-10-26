@@ -19,7 +19,6 @@ export function Scene3D() {
           antialias: false,
           alpha: true,
           powerPreference: 'high-performance',
-          pixelRatio: Math.min(window.devicePixelRatio, 2),
         }}
         dpr={[1, 2]}
         performance={{ min: 0.5 }}
