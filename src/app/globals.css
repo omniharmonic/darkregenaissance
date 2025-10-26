@@ -18,6 +18,25 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  /* Prevent pull-to-refresh on mobile */
+  overscroll-behavior-y: contain;
+  /* Improve touch scrolling */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent text selection on mobile for better UX */
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  
+  /* Allow text selection in input and message areas */
+  input, textarea, [contenteditable] {
+    -webkit-touch-callout: default;
+    -webkit-user-select: text;
+    user-select: text;
+  }
 }
 
 @layer utilities {

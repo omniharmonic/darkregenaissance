@@ -89,25 +89,25 @@ export function TerminalInterface() {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-20 pointer-events-none">
-      <div className="w-[720px] h-[480px] max-w-[90vw] max-h-[80vh] pointer-events-auto">
-        <div className="bg-black/85 backdrop-blur-md border border-[#00ff41]/40 rounded-lg h-full flex flex-col font-mono shadow-2xl shadow-[#00ff41]/20">
+    <div className="fixed inset-0 flex items-center justify-center z-20 pointer-events-none p-0 md:p-4">
+      <div className="w-full h-full md:w-[720px] md:h-[480px] md:max-w-[90vw] md:max-h-[80vh] pointer-events-auto">
+        <div className="bg-black/85 backdrop-blur-md border-0 md:border border-[#00ff41]/40 rounded-none md:rounded-lg h-full flex flex-col font-mono shadow-2xl shadow-[#00ff41]/20">
           {/* Terminal header */}
-          <div className="border-b border-[#00ff41]/30 p-4">
+          <div className="border-b border-[#00ff41]/30 p-3 md:p-4">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span className="text-[#00ff41] text-sm ml-4">
+              <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-500"></div>
+              <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-500"></div>
+              <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500"></div>
+              <span className="text-[#00ff41] text-xs md:text-sm ml-2 md:ml-4">
                 dark.regenaissance:~$
               </span>
             </div>
           </div>
 
           {/* Messages area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4">
             {messages.length === 0 && (
-              <div className="text-[#2d5f3f] text-sm">
+              <div className="text-[#2d5f3f] text-xs md:text-sm">
                 <p className="animate-pulse">the mycelium is listening...</p>
                 <p className="mt-2 text-xs opacity-60">
                   speak your truth into the darkness
@@ -120,10 +120,10 @@ export function TerminalInterface() {
             ))}
 
             {isLoading && (
-              <div className="text-[#2d5f3f] text-sm animate-pulse">
-                <span className="inline-block w-2 h-2 bg-[#4a7c4f] rounded-full animate-bounce mr-1"></span>
-                <span className="inline-block w-2 h-2 bg-[#4a7c4f] rounded-full animate-bounce mr-1" style={{ animationDelay: '0.1s' }}></span>
-                <span className="inline-block w-2 h-2 bg-[#4a7c4f] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+              <div className="text-[#2d5f3f] text-xs md:text-sm animate-pulse">
+                <span className="inline-block w-1.5 h-1.5 md:w-2 md:h-2 bg-[#4a7c4f] rounded-full animate-bounce mr-1"></span>
+                <span className="inline-block w-1.5 h-1.5 md:w-2 md:h-2 bg-[#4a7c4f] rounded-full animate-bounce mr-1" style={{ animationDelay: '0.1s' }}></span>
+                <span className="inline-block w-1.5 h-1.5 md:w-2 md:h-2 bg-[#4a7c4f] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
               </div>
             )}
 
@@ -131,7 +131,7 @@ export function TerminalInterface() {
           </div>
 
           {/* Input area */}
-          <div className="border-t border-[#00ff41]/30 p-4">
+          <div className="border-t border-[#00ff41]/30 p-3 md:p-4">
             <TerminalInput
               onSendMessage={handleSendMessage}
               disabled={isLoading}
