@@ -17,6 +17,7 @@
     "react": "^18",
     "react-dom": "^18",
     "three": "^0.169.0",
+    "three-stdlib": "^2.36.0",
     "twitter-api-v2": "^1.27.0",
     "zod": "^4.1.12"
   },
