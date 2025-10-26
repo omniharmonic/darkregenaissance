@@ -1,7 +1,10 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
+// Use /tmp directory in serverless environments (Vercel), otherwise use local data directory
+const DATA_DIR = process.env.VERCEL 
+  ? path.join('/tmp', 'data')
+  : path.join(process.cwd(), 'data');
 
 export interface Message {
   role: 'user' | 'assistant';
