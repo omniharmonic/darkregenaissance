@@ -2,7 +2,7 @@
 
 import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
-import { DarkForest } from './DarkForest';
+import { SimpleForest } from './SimpleForest';
 import { LoadingScreen } from './LoadingScreen';
 
 export function Scene3D() {
@@ -25,7 +25,7 @@ export function Scene3D() {
         }}
       >
         <Suspense fallback={null}>
-          <DarkForest />
+          <SimpleForest />
         </Suspense>
       </Canvas>
       <Suspense fallback={<LoadingScreen />}>
