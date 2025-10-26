@@ -10,13 +10,13 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
-    "@react-three/drei": "^10.7.6",
-    "@react-three/fiber": "^9.4.0",
+    "@react-three/drei": "^9.114.0",
+    "@react-three/fiber": "^8.17.10",
     "next": "14.2.33",
     "node-telegram-bot-api": "^0.66.0",
     "react": "^18",
     "react-dom": "^18",
-    "three": "^0.180.0",
+    "three": "^0.169.0",
     "twitter-api-v2": "^1.27.0",
     "zod": "^4.1.12"
   },
