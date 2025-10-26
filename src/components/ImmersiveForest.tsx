@@ -208,9 +208,9 @@ export function ImmersiveForest() {
         {/* Flowing mycelial networks */}
         <group ref={flowLinesRef}>
           {mycelialFlows.map((flow) => (
-            <line key={flow.id} geometry={flow.geometry}>
+            <line_ key={flow.id} geometry={flow.geometry}>
               <primitive object={flowMaterial.clone()} />
-            </line>
+            </line_>
           ))}
         </group>
 
