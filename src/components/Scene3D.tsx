@@ -2,7 +2,7 @@
 
 import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
-import { SimpleForest } from './SimpleForest';
+import { PerformantForest } from './PerformantForest';
 import { LoadingScreen } from './LoadingScreen';
 
 export function Scene3D() {
@@ -13,19 +13,22 @@ export function Scene3D() {
           position: [0, 2, 8],
           fov: 60,
           near: 0.1,
-          far: 100,
+          far: 50,
         }}
         gl={{
-          antialias: true,
+          antialias: false,
           alpha: true,
           powerPreference: 'high-performance',
+          pixelRatio: Math.min(window.devicePixelRatio, 2),
         }}
+        dpr={[1, 2]}
+        performance={{ min: 0.5 }}
         style={{
           background: '#0a0a12',
         }}
       >
         <Suspense fallback={null}>
-          <SimpleForest />
+          <PerformantForest />
         </Suspense>
       </Canvas>
       <Suspense fallback={<LoadingScreen />}>
