@@ -67,12 +67,12 @@ export function PerformantForest() {
   const optimizeForestMaterials = (object: THREE.Object3D) => {
     object.traverse((child) => {
       if (child instanceof THREE.Mesh) {
+        // Set shadow properties on the mesh
+        child.castShadow = true;
+        child.receiveShadow = true;
+
         if (child.material) {
           const material = child.material as THREE.MeshStandardMaterial;
-
-          // Performance optimizations
-          material.castShadow = true;
-          material.receiveShadow = true;
 
           // Reduce material complexity for performance
           material.roughness = Math.max(material.roughness || 0.8, 0.7);
