@@ -7,7 +7,7 @@ import path from 'path';
 export interface MonitorConfig {
   watchedAccounts: string[];
   mentionKeywords: string[];
-  dailyTweetTime: string; // HH:MM format
+  dailyTweetTimes: string[]; // Array of HH:MM format times
   maxResponsesPerHour: number;
 }
 
@@ -33,7 +33,7 @@ class TwitterMonitor {
     this.config = {
       watchedAccounts: [],
       mentionKeywords: ['@darkregenaI', 'dark regenaissance', 'mycelial'],
-      dailyTweetTime: '09:00',
+      dailyTweetTimes: ['09:00', '15:00', '21:00'], // 3 times per day
       maxResponsesPerHour: 5
     };
   }
@@ -275,8 +275,15 @@ class TwitterMonitor {
     }
   }
 
-  private scheduleNextDailyTweet(): void {
-    const [hours, minutes] = this.config.dailyTweetTime.split(':').map(Number);
+  private scheduleDailyTweets(): void {
+    // Schedule all daily tweet times
+    this.config.dailyTweetTimes.forEach((timeStr) => {
+      this.scheduleNextTweetAtTime(timeStr);
+    });
+  }
+
+  private scheduleNextTweetAtTime(timeStr: string): void {
+    const [hours, minutes] = timeStr.split(':').map(Number);
     const now = new Date();
     const scheduledTime = new Date();
     scheduledTime.setHours(hours, minutes, 0, 0);
@@ -288,11 +295,12 @@ class TwitterMonitor {
 
     const timeUntilPost = scheduledTime.getTime() - now.getTime();
 
-    console.log(`⏰ Next daily tweet scheduled for: ${scheduledTime.toISOString()}`);
+    console.log(`⏰ Daily tweet scheduled for: ${scheduledTime.toISOString()} (${timeStr})`);
 
     const timeout = setTimeout(async () => {
       await this.postDailyTweet();
-      this.scheduleNextDailyTweet(); // Schedule the next one
+      // Schedule the next occurrence (24 hours later)
+      this.scheduleNextTweetAtTime(timeStr);
     }, timeUntilPost);
 
     this.intervals.push(timeout);
@@ -310,21 +318,21 @@ class TwitterMonitor {
     console.log('🚀 Starting Twitter monitor...');
     console.log(`📊 Config: ${JSON.stringify(this.config, null, 2)}`);
 
-    // Check mentions every 5 minutes
+    // Check mentions every 15 minutes (max rate for free tier)
     const mentionInterval = setInterval(async () => {
       await this.checkMentions();
-    }, 5 * 60 * 1000);
+    }, 15 * 60 * 1000);
 
-    // Check watched accounts every 10 minutes
+    // Check watched accounts every 30 minutes (due to rate limits)
     const accountInterval = setInterval(async () => {
       await this.checkWatchedAccounts();
-    }, 10 * 60 * 1000);
+    }, 30 * 60 * 1000);
 
     this.intervals.push(mentionInterval);
     this.intervals.push(accountInterval);
 
     // Schedule daily tweets
-    this.scheduleNextDailyTweet();
+    this.scheduleDailyTweets();
 
     // Do initial checks
     await this.checkMentions();
