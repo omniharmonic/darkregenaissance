@@ -107,8 +107,9 @@ class TwitterMonitor {
             await this.respondToMention(mention);
           }
         }
-      } catch (searchError: any) {
-        if (searchError.message?.includes('429') || searchError.code === 429) {
+      } catch (searchError: unknown) {
+        const error = searchError as { message?: string; code?: number };
+        if (error.message?.includes('429') || error.code === 429) {
           console.log('⏰ Rate limit reached - will try again in 15 minutes');
           return; // Gracefully exit on rate limit
         }
