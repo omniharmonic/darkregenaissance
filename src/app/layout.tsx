@@ -15,7 +15,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Dark Renaissance",
-  description: "A dark forest illuminated by mycelial networks",
+  description: "Voice of the underground - a dark forest illuminated by mycelial networks",
   viewport: {
     width: 'device-width',
     initialScale: 1,
@@ -24,6 +24,22 @@ export const metadata: Metadata = {
     viewportFit: 'cover',
   },
   themeColor: '#0a0a12',
+  icons: {
+    icon: '/favicon.jpg',
+    apple: '/favicon.jpg',
+  },
+  openGraph: {
+    title: "Dark Renaissance",
+    description: "Voice of the underground - a dark forest illuminated by mycelial networks",
+    images: ['/favicon.jpg'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Dark Renaissance",
+    description: "Voice of the underground - a dark forest illuminated by mycelial networks",
+    images: ['/favicon.jpg'],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

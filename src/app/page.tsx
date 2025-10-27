@@ -27,15 +27,6 @@ export default function Home() {
       {/* Terminal Interface Overlay */}
       <TerminalInterface />
 
-      {/* Branding/Title */}
-      <div className="absolute top-4 left-4 md:top-6 md:left-6 z-10 pt-safe pl-safe">
-        <h1 className="text-[#2d5f3f] font-mono text-lg md:text-xl font-bold">
-          dark.regenaissance
-        </h1>
-        <p className="text-[#2d5f3f]/60 font-mono text-xs">
-          voice of the underground
-        </p>
-      </div>
 
       {/* Social Links - Top Right */}
       <div className="absolute top-4 right-4 z-10 pt-safe pr-safe">
