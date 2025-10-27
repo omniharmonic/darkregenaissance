@@ -65,7 +65,7 @@ class TwitterClient {
       }
 
       return usage;
-    } catch (error) {
+    } catch {
       // Initialize usage file if it doesn't exist
       const initialUsage: TwitterUsage = {
         read: 0,

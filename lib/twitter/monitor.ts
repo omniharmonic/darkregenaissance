@@ -1,6 +1,6 @@
-import { twitterClient } from './client';
+import { twitterClient, type TweetData } from './client';
 import { generateResponse } from '../services/ai';
-import { loadConversation, saveConversation, type Conversation } from '../services/conversation';
+import { type Conversation } from '../services/conversation';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -42,7 +42,7 @@ class TwitterMonitor {
     try {
       const data = await fs.readFile(this.configFile, 'utf-8');
       this.config = { ...this.config, ...JSON.parse(data) };
-    } catch (error) {
+    } catch {
       // Use default config if file doesn't exist
       await this.saveConfig();
     }
@@ -62,7 +62,7 @@ class TwitterMonitor {
     try {
       const data = await fs.readFile(this.mentionsFile, 'utf-8');
       return JSON.parse(data);
-    } catch (error) {
+    } catch {
       return [];
     }
   }
@@ -115,7 +115,7 @@ class TwitterMonitor {
       // Update last checked mention ID
       const allMentions = await this.loadMentions();
       if (allMentions.length > 0) {
-        this.lastMentionId = Math.max(...allMentions.map(m => m.id)).toString();
+        this.lastMentionId = Math.max(...allMentions.map(m => parseInt(m.id))).toString();
       }
 
     } catch (error) {
@@ -186,7 +186,7 @@ class TwitterMonitor {
     }
   }
 
-  private async shouldRespondToAccount(tweet: any): Promise<boolean> {
+  private async shouldRespondToAccount(tweet: TweetData): Promise<boolean> {
     // Don't respond to very old tweets (more than 24 hours)
     const tweetTime = new Date(tweet.createdAt);
     const now = new Date();
@@ -201,7 +201,7 @@ class TwitterMonitor {
     return !alreadyProcessed;
   }
 
-  private async respondToAccountTweet(tweet: any): Promise<void> {
+  private async respondToAccountTweet(tweet: TweetData): Promise<void> {
     try {
       if (!await this.canRespond()) {
         console.log('⏱️ Rate limit reached, skipping account response');

@@ -9,9 +9,9 @@ interface TerminalInputProps {
 
 export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
   const [input, setInput] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -30,7 +30,7 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
       <span className="text-[#00ff41] text-sm md:text-sm shrink-0 mb-1">{'>'}</span>
       <div className="flex-1 relative">
         <textarea
-          ref={inputRef as any}
+          ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -43,9 +43,10 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
             height: 'auto',
             minHeight: '20px'
           }}
-          onInput={(e: any) => {
-            e.target.style.height = 'auto';
-            e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px';
+          onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
+            const target = e.target as HTMLTextAreaElement;
+            target.style.height = 'auto';
+            target.style.height = Math.min(target.scrollHeight, 100) + 'px';
           }}
         />
 
