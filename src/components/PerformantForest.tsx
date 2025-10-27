@@ -9,6 +9,7 @@ export function PerformantForest() {
   const sceneRef = useRef<THREE.Group>(null);
   const myceliumRef = useRef<THREE.Group>(null);
   const flowLightsRef = useRef<THREE.Group>(null);
+  const cameraGroupRef = useRef<THREE.Group>(null);
 
   // Load the actual forest model
   const forest = useLoader(GLTFLoader, '/models/scene.gltf');
@@ -106,6 +107,22 @@ export function PerformantForest() {
     const time = state.clock.elapsedTime;
     frameCountRef.current++;
 
+    // Very subtle camera movement - gradual push into forest
+    if (state.camera && frameCountRef.current % 5 === 0) {
+      // Extremely slow forward movement into the densely populated forest area
+      const forwardPush = Math.sin(time * 0.008) * 0.5; // Very slow push in/out
+      const lateralSway = Math.sin(time * 0.006) * 0.3; // Gentle side-to-side
+      const verticalFloat = Math.sin(time * 0.005) * 0.2; // Subtle up/down
+
+      // Position in the densest part of the forest model
+      state.camera.position.x = lateralSway;
+      state.camera.position.y = 2 + verticalFloat;
+      state.camera.position.z = 8 - forwardPush; // Gradually move into forest
+
+      // Look slightly ahead into the forest
+      state.camera.lookAt(0, 0, 0);
+    }
+
     // Very gentle scene rotation (only every 3rd frame)
     if (sceneRef.current && frameCountRef.current % 3 === 0) {
       sceneRef.current.rotation.y = time * 0.002;
@@ -127,10 +144,10 @@ export function PerformantForest() {
           const waveOffset = time * 1.2 + flow.phase + (flowIndex * 0.5);
           const wave = Math.sin(waveOffset) * 0.5 + 0.5;
 
-          // Use pre-calculated intensity base
+          // Use pre-calculated intensity base (restored original intensity)
           light.intensity = intensityBase * wave;
 
-          // Simplified color using pre-calculated hue
+          // Simplified color using pre-calculated hue (restored original colors)
           const saturation = 0.7 + wave * 0.15;
           const lightness = 0.35 + wave * 0.15;
           light.color.setHSL(hueBase, saturation, lightness);
