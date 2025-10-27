@@ -11,6 +11,7 @@
     "reply": "tsx scripts/reply-tweet.ts",
     "telegram:start": "tsx scripts/telegram-server.ts",
     "monitor:start": "tsx scripts/monitor-server.ts",
+    "monitor": "tsx scripts/check-mentions.ts",
     "configure": "tsx scripts/configure-monitor.ts"
   },
   "dependencies": {
