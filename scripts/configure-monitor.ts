@@ -49,7 +49,7 @@ async function main() {
       console.log('');
       console.log('👀 Watched Accounts:', config.watchedAccounts);
       console.log('🔍 Mention Keywords:', config.mentionKeywords);
-      console.log('⏰ Daily Tweet Time:', config.dailyTweetTime);
+      console.log('⏰ Daily Tweet Times:', config.dailyTweetTimes || ['09:00']);
       console.log('⚡ Max Responses/Hour:', config.maxResponsesPerHour);
       break;
 
