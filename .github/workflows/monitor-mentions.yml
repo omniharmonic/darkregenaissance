@@ -1,0 +1,41 @@
+name: Dark Regenaissance Monitor Mentions
+
+on:
+  schedule:
+    # Every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  monitor-mentions:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Monitor mentions and respond
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+        TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+        TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+        TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+        TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+      run: |
+        echo "🔍 Monitoring mentions..."
+        npm run monitor -- --check
+
+    - name: Log completion
+      run: |
+        echo "✅ Mention monitoring completed at $(date)"
+        echo "🕸️ The network watches and responds..."
