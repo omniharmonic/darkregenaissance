@@ -6,12 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "tweet": "tsx scripts/post-tweet.ts",
+    "reply": "tsx scripts/reply-tweet.ts",
+    "telegram:start": "tsx scripts/telegram-server.ts",
+    "monitor:start": "tsx scripts/monitor-server.ts",
+    "configure": "tsx scripts/configure-monitor.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@react-three/drei": "^9.114.0",
     "@react-three/fiber": "^8.17.10",
+    "dotenv": "^17.2.3",
     "next": "14.2.33",
     "node-telegram-bot-api": "^0.66.0",
     "react": "^18",
@@ -23,7 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/node-telegram-bot-api": "^0.64.11",
+    "@types/node-telegram-bot-api": "^0.64.12",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/three": "^0.180.0",
@@ -31,6 +37,7 @@
     "eslint-config-next": "14.2.33",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

@@ -28,8 +28,8 @@ export default function Home() {
       <TerminalInterface />
 
       {/* Branding/Title */}
-      <div className="absolute top-6 left-6 z-10">
-        <h1 className="text-[#2d5f3f] font-mono text-xl font-bold">
+      <div className="absolute top-4 left-4 md:top-6 md:left-6 z-10 pt-safe pl-safe">
+        <h1 className="text-[#2d5f3f] font-mono text-lg md:text-xl font-bold">
           dark.regenaissance
         </h1>
         <p className="text-[#2d5f3f]/60 font-mono text-xs">
@@ -37,11 +37,12 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Subtle UI hints for mobile */}
-      <div className="absolute bottom-6 left-6 z-10 md:hidden">
-        <p className="text-[#2d5f3f]/40 font-mono text-xs">
-          touch to explore • speak your truth
-        </p>
+      {/* Mobile status indicator */}
+      <div className="absolute top-4 right-4 z-10 md:hidden pt-safe pr-safe">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-[#2d5f3f] rounded-full animate-pulse"></div>
+          <span className="text-[#2d5f3f]/60 font-mono text-xs">online</span>
+        </div>
       </div>
     </main>
   );
