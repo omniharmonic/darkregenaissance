@@ -16,8 +16,9 @@ export interface Conversation {
   createdAt: string;
 }
 
-const getConversationPath = (conversationId: string, platform: 'web' | 'telegram' = 'web') => {
-  return path.join(process.cwd(), 'data', 'conversations', platform, `${conversationId}.json`);
+const getConversationPath = (conversationId: string, platform: 'web' | 'telegram' | 'twitter' = 'web') => {
+  const validPlatform = platform === 'twitter' ? 'web' : platform; // Map twitter to web for storage
+  return path.join(process.cwd(), 'data', 'conversations', validPlatform, `${conversationId}.json`);
 };
 
 export async function saveConversation(conversation: Conversation): Promise<void> {
@@ -26,18 +27,18 @@ export async function saveConversation(conversation: Conversation): Promise<void
   await fs.writeFile(filePath, JSON.stringify(conversation, null, 2));
 }
 
-export async function loadConversation(conversationId: string, platform: 'web' | 'telegram' = 'web'): Promise<Conversation | null> {
+export async function loadConversation(conversationId: string, platform: 'web' | 'telegram' | 'twitter' = 'web'): Promise<Conversation | null> {
   try {
     const filePath = getConversationPath(conversationId, platform);
     const data = await fs.readFile(filePath, 'utf-8');
     return JSON.parse(data) as Conversation;
-  } catch (error) {
+  } catch {
     // File doesn't exist or is invalid
     return null;
   }
 }
 
-export async function listConversations(platform: 'web' | 'telegram' = 'web'): Promise<Conversation[]> {
+export async function listConversations(platform: 'web' | 'telegram' | 'twitter' = 'web'): Promise<Conversation[]> {
   try {
     const conversationsDir = path.join(process.cwd(), 'data', 'conversations', platform);
     const files = await fs.readdir(conversationsDir);
@@ -51,31 +52,31 @@ export async function listConversations(platform: 'web' | 'telegram' = 'web'): P
           const data = await fs.readFile(filePath, 'utf-8');
           const conversation = JSON.parse(data) as Conversation;
           conversations.push(conversation);
-        } catch (error) {
-          console.error(`Failed to load conversation ${file}:`, error);
+        } catch (err) {
+          console.error(`Failed to load conversation ${file}:`, err);
         }
       }
     }
 
     // Sort by creation date (newest first)
     return conversations.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  } catch (error) {
+  } catch {
     // Directory doesn't exist yet
     return [];
   }
 }
 
-export async function deleteConversation(conversationId: string, platform: 'web' | 'telegram' = 'web'): Promise<boolean> {
+export async function deleteConversation(conversationId: string, platform: 'web' | 'telegram' | 'twitter' = 'web'): Promise<boolean> {
   try {
     const filePath = getConversationPath(conversationId, platform);
     await fs.unlink(filePath);
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
 
-export async function getConversationStats(platform?: 'web' | 'telegram'): Promise<{
+export async function getConversationStats(platform?: 'web' | 'telegram' | 'twitter'): Promise<{
   totalConversations: number;
   totalMessages: number;
   averageMessagesPerConversation: number;
@@ -87,7 +88,7 @@ export async function getConversationStats(platform?: 'web' | 'telegram'): Promi
   const platformCounts: Record<string, number> = {};
 
   for (const p of platforms) {
-    const conversations = await listConversations(p as 'web' | 'telegram');
+    const conversations = await listConversations(p as 'web' | 'telegram' | 'twitter');
     totalConversations += conversations.length;
     platformCounts[p] = conversations.length;
 

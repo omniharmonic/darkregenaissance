@@ -23,7 +23,8 @@ async function main() {
       }
 
       const currentConfig = twitterMonitor.getConfig();
-      const newAccounts = [...new Set([...currentConfig.watchedAccounts, ...args])];
+      const accountSet = new Set([...currentConfig.watchedAccounts, ...args]);
+      const newAccounts = Array.from(accountSet);
       await twitterMonitor.updateWatchedAccounts(newAccounts);
       console.log('✅ Updated watched accounts:', newAccounts);
       break;
