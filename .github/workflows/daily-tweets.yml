@@ -1,0 +1,43 @@
+name: Dark Regenaissance Daily Tweets
+
+on:
+  schedule:
+    # 3 times per day: 9:00 AM, 3:00 PM, 9:00 PM UTC
+    - cron: '0 9 * * *'   # 9:00 AM UTC
+    - cron: '0 15 * * *'  # 3:00 PM UTC
+    - cron: '0 21 * * *'  # 9:00 PM UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  post-tweet:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Post AI-generated tweet
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+        TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+        TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+        TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+        TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+      run: |
+        echo "🌅 Posting Dark Regenaissance daily insight..."
+        npm run tweet -- --generate
+
+    - name: Log completion
+      run: |
+        echo "✅ Daily tweet posted at $(date)"
+        echo "🍄 The mycelial network spreads wisdom..."
