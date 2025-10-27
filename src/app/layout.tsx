@@ -21,6 +21,12 @@ export const metadata: Metadata = {
     initialScale: 1,
     maximumScale: 1,
     userScalable: false,
+    viewportFit: 'cover',
+  },
+  themeColor: '#0a0a12',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
   },
 };
 
