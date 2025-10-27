@@ -9,7 +9,6 @@ export function PerformantForest() {
   const sceneRef = useRef<THREE.Group>(null);
   const myceliumRef = useRef<THREE.Group>(null);
   const flowLightsRef = useRef<THREE.Group>(null);
-  const cameraGroupRef = useRef<THREE.Group>(null);
 
   // Load the actual forest model
   const forest = useLoader(GLTFLoader, '/models/scene.gltf');
