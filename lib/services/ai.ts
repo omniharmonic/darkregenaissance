@@ -63,17 +63,29 @@ export async function generateResponse(conversation: Conversation): Promise<stri
         : `Dark Regenaissance: ${msg.content}`
     ).join('\n\n');
 
+    const isTwitter = conversation.platform === 'twitter';
+    const lengthConstraint = isTwitter
+      ? 'Keep your response under 250 characters (Twitter length limit)'
+      : 'Keep your response under 300 words';
+
     const prompt = `${SYSTEM_PROMPT}
 
 Previous conversation:
 ${conversationText}
 
-Respond as the dark regenaissance voice. Keep your response under 300 words and embody the voice described above.`;
+Respond as the dark regenaissance voice. ${lengthConstraint} and embody the voice described above.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
 
-    return response.text().trim();
+    let text = response.text().trim();
+
+    // Enforce Twitter character limit
+    if (isTwitter && text.length > 250) {
+      text = text.substring(0, 247) + '...';
+    }
+
+    return text;
   } catch (error) {
     console.error('AI generation error:', error);
     throw new Error('Failed to generate response from the mycelial network');

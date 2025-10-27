@@ -76,15 +76,12 @@ class TwitterMonitor {
     try {
       console.log('🔍 Checking for mentions...');
 
-      // Search for mentions using various patterns
-      const searchQueries = [
-        '@darkregenaI',
-        'dark regenaissance',
-        ...this.config.mentionKeywords
-      ];
+      // Use single search query to avoid rate limiting (Twitter free API: 1 search per 15 minutes)
+      // Search for the most specific mention pattern
+      const primaryQuery = '@darkregenaI';
 
-      for (const query of searchQueries) {
-        const tweets = await twitterClient.searchTweets(query, 10);
+      try {
+        const tweets = await twitterClient.searchTweets(primaryQuery, 10);
 
         for (const tweet of tweets) {
           if (this.lastMentionId && tweet.id <= this.lastMentionId) {
@@ -110,6 +107,12 @@ class TwitterMonitor {
             await this.respondToMention(mention);
           }
         }
+      } catch (searchError: any) {
+        if (searchError.message?.includes('429') || searchError.code === 429) {
+          console.log('⏰ Rate limit reached - will try again in 15 minutes');
+          return; // Gracefully exit on rate limit
+        }
+        throw searchError; // Re-throw other errors
       }
 
       // Update last checked mention ID
