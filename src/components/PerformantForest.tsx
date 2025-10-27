@@ -15,7 +15,16 @@ export function PerformantForest() {
 
   // Strategically placed lights for optimal performance
   const veinLights = useMemo(() => {
-    const lights = [];
+    const lights: Array<{
+      light: THREE.PointLight;
+      baseHeight: number;
+      baseX: number;
+      baseZ: number;
+      phase: number;
+      hueBase: number;
+      intensityBase: number;
+      zoneIndex: number;
+    }> = [];
 
     // Strategic placement: Close, Mid, Far distances from camera (at 0,2,8)
     const zones = [
