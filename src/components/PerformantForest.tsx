@@ -13,54 +13,42 @@ export function PerformantForest() {
   // Load the actual forest model
   const forest = useLoader(GLTFLoader, '/models/scene.gltf');
 
-  // Highly optimized flowing lights (performance critical)
+  // Strategically placed lights for optimal performance
   const veinLights = useMemo(() => {
-    const flows = [];
-    const numFlows = 4; // Further reduced for performance
+    const lights = [];
 
-    for (let i = 0; i < numFlows; i++) {
-      const angle = (i / numFlows) * Math.PI * 2;
-      const radius = 4 + Math.random() * 4;
-      const x = Math.cos(angle) * radius;
-      const z = Math.sin(angle) * radius;
+    // Strategic placement: Close, Mid, Far distances from camera (at 0,2,8)
+    const zones = [
+      { distance: 2, count: 2, intensity: 0.6 },  // Close to camera
+      { distance: 5, count: 2, intensity: 0.4 },  // Mid distance
+      { distance: 8, count: 1, intensity: 0.3 }   // Far distance
+    ];
 
-      // Only 3 lights per flow (12 total instead of 36)
-      const flowLights = [];
-      for (let j = 0; j < 3; j++) {
+    zones.forEach((zone, zoneIndex) => {
+      for (let i = 0; i < zone.count; i++) {
+        const angle = (i / zone.count) * Math.PI * 2 + (zoneIndex * 0.5);
+        const x = Math.cos(angle) * zone.distance;
+        const z = Math.sin(angle) * zone.distance;
+        const height = -0.5 + Math.random() * 3;
+
         const light = new THREE.PointLight('#4a7c59', 0, 6, 1.2);
-        const height = -0.5 + (j / 2) * 4; // Optimized height range
-        light.position.set(
-          x + (Math.random() - 0.5) * 0.4,
-          height,
-          z + (Math.random() - 0.5) * 0.4
-        );
-
-        // Maximum performance settings
+        light.position.set(x, height, z);
         light.castShadow = false;
-        light.shadow.camera.near = 0.1;
-        light.shadow.camera.far = 10;
 
-        flowLights.push({
+        lights.push({
           light,
           baseHeight: height,
-          flowIndex: j,
-          baseX: x + (Math.random() - 0.5) * 0.4,
-          baseZ: z + (Math.random() - 0.5) * 0.4,
+          baseX: x,
+          baseZ: z,
           phase: Math.random() * Math.PI * 2,
-          // Pre-calculate color values for performance
-          hueBase: 0.28 + (j / 2) * 0.06,
-          intensityBase: Math.pow(1 - j / 2, 0.5) * 0.8
+          hueBase: 0.28 + (zoneIndex * 0.04),
+          intensityBase: zone.intensity,
+          zoneIndex
         });
       }
+    });
 
-      flows.push({
-        id: i,
-        flowLights,
-        phase: (i / numFlows) * Math.PI * 2
-      });
-    }
-
-    return flows;
+    return lights;
   }, []);
 
   // Aggressively optimize forest materials for maximum performance
@@ -133,32 +121,31 @@ export function PerformantForest() {
       myceliumRef.current.scale.setScalar(pulse);
     }
 
-    // Animate flowing lights (only every 2nd frame for 30fps instead of 60fps)
-    if (flowLightsRef.current && frameCountRef.current % 2 === 0) {
-      veinLights.forEach((flow) => {
-        flow.flowLights.forEach((lightData) => {
-          const { light, flowIndex, phase, baseX, baseZ, baseHeight, hueBase, intensityBase } = lightData;
+    // Animate flowing lights (only every 4th frame for better performance)
+    if (flowLightsRef.current && frameCountRef.current % 4 === 0) {
+      veinLights.forEach((lightData) => {
+        const { light, phase, baseX, baseZ, baseHeight, hueBase, intensityBase, zoneIndex } = lightData;
 
-          // Simplified wave calculation
-          const waveOffset = time * 1.2 + flow.phase + (flowIndex * 0.5);
-          const wave = Math.sin(waveOffset) * 0.5 + 0.5;
+        // Slower wave calculation based on zone
+        const waveSpeed = 0.8 - (zoneIndex * 0.1); // Closer lights pulse faster
+        const waveOffset = time * waveSpeed + phase;
+        const wave = Math.sin(waveOffset) * 0.5 + 0.5;
 
-          // Use pre-calculated intensity base (restored original intensity)
-          light.intensity = intensityBase * wave;
+        // Use pre-calculated intensity base
+        light.intensity = intensityBase * wave;
 
-          // Simplified color using pre-calculated hue (restored original colors)
-          const saturation = 0.7 + wave * 0.15;
-          const lightness = 0.35 + wave * 0.15;
-          light.color.setHSL(hueBase, saturation, lightness);
+        // Simplified color using pre-calculated hue
+        const saturation = 0.7 + wave * 0.1;
+        const lightness = 0.35 + wave * 0.1;
+        light.color.setHSL(hueBase, saturation, lightness);
 
-          // Reduced movement calculation
-          const movement = Math.sin(time * 0.6 + phase) * 0.06;
-          light.position.set(
-            baseX + movement,
-            baseHeight + movement * 0.3,
-            baseZ + movement
-          );
-        });
+        // Minimal movement - just slight vertical float
+        const movement = Math.sin(time * 0.4 + phase) * 0.04;
+        light.position.set(
+          baseX,
+          baseHeight + movement,
+          baseZ
+        );
       });
     }
   });
@@ -218,14 +205,10 @@ export function PerformantForest() {
         {/* Mycelium placeholder - can be added later */}
         <group ref={myceliumRef} />
 
-        {/* Optimized flowing vein lights */}
+        {/* Optimized strategically placed lights */}
         <group ref={flowLightsRef}>
-          {veinLights.map((flow) => (
-            <group key={flow.id}>
-              {flow.flowLights.map((lightData, index) => (
-                <primitive key={index} object={lightData.light} />
-              ))}
-            </group>
+          {veinLights.map((lightData, index) => (
+            <primitive key={index} object={lightData.light} />
           ))}
         </group>
 
