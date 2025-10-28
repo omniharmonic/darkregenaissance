@@ -10,9 +10,15 @@ function initializeBot(): TelegramBot {
     throw new Error('TELEGRAM_BOT_TOKEN not found in environment variables');
   }
 
+  // In production, use webhooks instead of polling
+  // In development, use polling for easier testing
+  const usePolling = process.env.NODE_ENV !== 'production' && !process.env.VERCEL;
+
   botInstance = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, {
-    polling: process.env.NODE_ENV !== 'production'
+    polling: usePolling
   });
+
+  console.log(`🤖 Telegram bot initialized with ${usePolling ? 'polling' : 'webhook'} mode`);
 
   setupHandlers(botInstance);
   return botInstance;
