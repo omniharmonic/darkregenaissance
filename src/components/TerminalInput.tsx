@@ -9,6 +9,7 @@ interface TerminalInputProps {
 
 export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
   const [input, setInput] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -34,6 +35,8 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           disabled={disabled}
           placeholder={disabled ? "processing..." : "speak your truth..."}
           className="w-full bg-transparent text-[#00ff41] text-base md:text-sm border-none outline-none placeholder-[#2d5f3f] caret-[#00ff41] resize-none min-h-[20px] max-h-[100px] leading-tight py-1"
@@ -50,8 +53,8 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
           }}
         />
 
-        {/* Blinking cursor when focused */}
-        {input === '' && !disabled && (
+        {/* Blinking cursor when focused and empty (but not showing placeholder) */}
+        {input === '' && isFocused && !disabled && (
           <span className="absolute left-0 top-1 text-[#00ff41] text-base md:text-sm animate-pulse pointer-events-none">
             |
           </span>
