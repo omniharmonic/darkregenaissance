@@ -14,7 +14,7 @@ jobs:
     - name: Monitor mentions and respond
       run: |
         echo "🔍 Monitoring mentions..."
-        response=$(curl -s -X POST "https://darkregenaissance.vercel.app/api/cron/monitor" \
+        response=$(curl -s -X POST "https://darkregenaissanceai.vercel.app/api/cron/monitor" \
           -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
           -H "Content-Type: application/json" \
           -d '{"action": "check_mentions"}')

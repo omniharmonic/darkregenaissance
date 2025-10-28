@@ -16,7 +16,7 @@ jobs:
     - name: Post AI-generated tweet
       run: |
         echo "🌅 Posting Dark Regenaissance daily insight..."
-        response=$(curl -s -X POST "https://darkregenaissance.vercel.app/api/cron/tweet" \
+        response=$(curl -s -X POST "https://darkregenaissanceai.vercel.app/api/cron/tweet" \
           -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
           -H "Content-Type: application/json" \
           -d '{"action": "generate_daily_tweet"}')
