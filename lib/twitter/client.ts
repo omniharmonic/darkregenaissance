@@ -1,6 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2';
-import fs from 'fs/promises';
-import path from 'path';
+import { db } from '../services/database';
 
 export interface TwitterUsage {
   read: number;
@@ -22,10 +21,9 @@ export interface TweetData {
 
 class TwitterClient {
   private client: TwitterApi | null = null;
-  private usageFile: string;
 
   constructor() {
-    this.usageFile = path.join(process.cwd(), 'data', 'tweets', 'usage.json');
+    // Database-based storage - no file paths needed
   }
 
   private initializeClient() {
@@ -49,52 +47,15 @@ class TwitterClient {
     return this.client;
   }
 
-  private async getUsage(): Promise<TwitterUsage> {
-    try {
-      const data = await fs.readFile(this.usageFile, 'utf-8');
-      const usage = JSON.parse(data) as TwitterUsage;
-
-      // Reset daily counters if it's a new day
-      const lastReset = new Date(usage.lastReset);
-      const now = new Date();
-      if (now.toDateString() !== lastReset.toDateString()) {
-        usage.read = 0;
-        usage.write = 0;
-        usage.lastReset = now.toISOString();
-        await this.saveUsage(usage);
-      }
-
-      return usage;
-    } catch {
-      // Initialize usage file if it doesn't exist
-      const initialUsage: TwitterUsage = {
-        read: 0,
-        write: 0,
-        lastReset: new Date().toISOString(),
-        dailyLimit: {
-          read: 100,  // Conservative limit
-          write: 50   // Conservative limit
-        }
-      };
-      await this.saveUsage(initialUsage);
-      return initialUsage;
-    }
-  }
-
-  private async saveUsage(usage: TwitterUsage): Promise<void> {
-    await fs.mkdir(path.dirname(this.usageFile), { recursive: true });
-    await fs.writeFile(this.usageFile, JSON.stringify(usage, null, 2));
+  private async checkRateLimit(type: 'read' | 'write'): Promise<boolean> {
+    // Use database-based rate limiting
+    const limit = type === 'read' ? 100 : 50;
+    return await db.checkUsageLimit('twitter', type, limit);
   }
 
   private async trackUsage(type: 'read' | 'write'): Promise<void> {
-    const usage = await this.getUsage();
-    usage[type]++;
-    await this.saveUsage(usage);
-  }
-
-  private async checkRateLimit(type: 'read' | 'write'): Promise<boolean> {
-    const usage = await this.getUsage();
-    return usage[type] < usage.dailyLimit[type];
+    // Track usage in database
+    await db.trackUsage('twitter', type, 1);
   }
 
   async postTweet(text: string, replyToId?: string): Promise<string> {
@@ -114,16 +75,6 @@ class TwitterClient {
       });
 
       await this.trackUsage('write');
-
-      // Save tweet data
-      const tweetData: TweetData = {
-        id: response.data.id,
-        text,
-        createdAt: new Date().toISOString(),
-        replyToId
-      };
-
-      await this.saveTweetData(tweetData);
 
       return response.data.id;
     } catch (error) {
@@ -161,16 +112,28 @@ class TwitterClient {
     }
   }
 
-  private async saveTweetData(tweet: TweetData): Promise<void> {
-    const tweetsDir = path.join(process.cwd(), 'data', 'tweets');
-    await fs.mkdir(tweetsDir, { recursive: true });
+  async getUsageStats(): Promise<{
+    read: number;
+    write: number;
+    lastReset: string;
+    dailyLimit: { read: number; write: number };
+  }> {
+    // Get today's usage from database
+    const today = new Date().toISOString().split('T')[0];
+    const usage = await db.getUsageStats('twitter', today, today);
 
-    const filename = path.join(tweetsDir, `${tweet.id}.json`);
-    await fs.writeFile(filename, JSON.stringify(tweet, null, 2));
-  }
+    const readUsage = usage.find(u => u.operation_type === 'read')?.operation_count || 0;
+    const writeUsage = usage.find(u => u.operation_type === 'write')?.operation_count || 0;
 
-  async getUsageStats(): Promise<TwitterUsage> {
-    return await this.getUsage();
+    return {
+      read: readUsage,
+      write: writeUsage,
+      lastReset: today,
+      dailyLimit: {
+        read: 100,
+        write: 50
+      }
+    };
   }
 
   async searchTweets(query: string, maxResults: number = 10): Promise<TweetData[]> {
