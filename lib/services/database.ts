@@ -7,7 +7,7 @@ export interface Conversation {
   platform_id?: string;
   user_id?: string;
   status: 'active' | 'closed' | 'archived';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -17,7 +17,7 @@ export interface Message {
   conversation_id: string;
   role: 'user' | 'assistant';
   content: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at: string;
 }
 
@@ -30,7 +30,7 @@ export interface Interaction {
   processed: boolean;
   response_sent: boolean;
   conversation_id?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   processed_at?: string;
   created_at: string;
 }
@@ -41,7 +41,7 @@ export interface UsageTracking {
   operation_type: 'read' | 'write' | 'search' | 'generate';
   operation_count: number;
   date: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at: string;
 }
 
@@ -92,7 +92,7 @@ class DatabaseService {
     platformInteractionId: string,
     interactionType: string,
     userId?: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<string | null> {
     const { data, error } = await this.getClient()
       .from('interactions')
@@ -177,7 +177,7 @@ class DatabaseService {
     platform: string,
     platformId?: string,
     userId?: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<string | null> {
     const { data, error } = await this.getClient()
       .from('conversations')
@@ -246,7 +246,7 @@ class DatabaseService {
     conversationId: string,
     role: 'user' | 'assistant',
     content: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<string | null> {
     const { data, error } = await this.getClient()
       .from('messages')
@@ -333,7 +333,7 @@ class DatabaseService {
     platform: string,
     operationType: string,
     count: number = 1,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<boolean> {
     const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
 
@@ -423,7 +423,7 @@ class DatabaseService {
   /**
    * Get interaction statistics
    */
-  async getInteractionStats(days: number = 7): Promise<any> {
+  async getInteractionStats(days: number = 7): Promise<unknown> {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
@@ -444,7 +444,7 @@ class DatabaseService {
   /**
    * Get conversation statistics
    */
-  async getConversationStats(platform?: string): Promise<any> {
+  async getConversationStats(platform?: string): Promise<unknown> {
     let query = this.getClient()
       .from('conversations')
       .select('platform, status, created_at');
@@ -512,7 +512,17 @@ export const db = new DatabaseService();
  * Migration helper: Convert file-based conversation to database
  */
 export async function migrateFileConversation(
-  fileConversation: any
+  fileConversation: {
+    platform: string;
+    platformId?: string;
+    id: string;
+    messages: Array<{
+      role: 'user' | 'assistant';
+      content: string;
+      timestamp: string;
+      id: string;
+    }>;
+  }
 ): Promise<string | null> {
   const conversationId = await db.createConversation(
     fileConversation.platform,
