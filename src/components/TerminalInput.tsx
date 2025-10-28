@@ -27,7 +27,7 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
 
   return (
     <div className="flex items-end gap-2 md:gap-3 w-full">
-      <span className="text-[#00ff41] text-sm md:text-sm shrink-0 mb-1">{'>'}</span>
+      <span className="text-[#00ff41] text-base md:text-sm shrink-0 mb-1">{'>'}</span>
       <div className="flex-1 min-w-0 relative">
         <textarea
           ref={inputRef}
@@ -36,7 +36,7 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
           onKeyDown={handleKeyDown}
           disabled={disabled}
           placeholder={disabled ? "processing..." : "speak your truth..."}
-          className="w-full bg-transparent text-[#00ff41] text-sm md:text-sm border-none outline-none placeholder-[#2d5f3f] caret-[#00ff41] resize-none min-h-[20px] max-h-[100px] leading-tight py-1"
+          className="w-full bg-transparent text-[#00ff41] text-base md:text-sm border-none outline-none placeholder-[#2d5f3f] caret-[#00ff41] resize-none min-h-[20px] max-h-[100px] leading-tight py-1"
           autoFocus
           rows={1}
           style={{
@@ -52,7 +52,7 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
 
         {/* Blinking cursor when focused */}
         {input === '' && !disabled && (
-          <span className="absolute left-0 top-1 text-[#00ff41] text-sm md:text-sm animate-pulse pointer-events-none">
+          <span className="absolute left-0 top-1 text-[#00ff41] text-base md:text-sm animate-pulse pointer-events-none">
             |
           </span>
         )}
@@ -61,7 +61,7 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
       {input.trim() && !disabled && (
         <button
           onClick={handleSend}
-          className="text-[#00ff41] hover:text-[#6bffb8] active:text-[#6bffb8] transition-colors text-sm px-2 py-2 md:px-3 md:py-1 border border-[#00ff41]/30 rounded-md hover:border-[#6bffb8]/50 active:border-[#6bffb8]/50 touch-manipulation bg-[#00ff41]/5 hover:bg-[#6bffb8]/10 active:bg-[#6bffb8]/10 min-h-[36px] md:min-h-[32px] w-10 md:w-auto flex items-center justify-center shrink-0"
+          className="text-[#00ff41] hover:text-[#6bffb8] active:text-[#6bffb8] transition-colors text-base md:text-sm px-2 py-2 md:px-3 md:py-1 border border-[#00ff41]/30 rounded-md hover:border-[#6bffb8]/50 active:border-[#6bffb8]/50 touch-manipulation bg-[#00ff41]/5 hover:bg-[#6bffb8]/10 active:bg-[#6bffb8]/10 min-h-[36px] md:min-h-[32px] w-10 md:w-auto flex items-center justify-center shrink-0"
         >
           <svg
             width="16"
