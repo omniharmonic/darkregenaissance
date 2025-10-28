@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Dark Renaissance",
+  title: "Dark Regenaissance",
   description: "Voice of the underground - a dark forest illuminated by mycelial networks",
   viewport: {
     width: 'device-width',
@@ -25,18 +25,22 @@ export const metadata: Metadata = {
   },
   themeColor: '#0a0a12',
   icons: {
-    icon: '/favicon.jpg',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.jpg', type: 'image/jpeg' }
+    ],
     apple: '/favicon.jpg',
+    shortcut: '/favicon.ico',
   },
   openGraph: {
-    title: "Dark Renaissance",
+    title: "Dark Regenaissance",
     description: "Voice of the underground - a dark forest illuminated by mycelial networks",
     images: ['/favicon.jpg'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Dark Renaissance",
+    title: "Dark Regenaissance",
     description: "Voice of the underground - a dark forest illuminated by mycelial networks",
     images: ['/favicon.jpg'],
   },
