@@ -1,6 +1,6 @@
 import { twitterClient, type TweetData } from './client';
 import { generateResponse } from '../services/ai';
-import { type Conversation } from '../services/conversation';
+import { db } from '../services/database';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -58,54 +58,57 @@ class TwitterMonitor {
     await this.saveConfig();
   }
 
-  async loadMentions(): Promise<MentionEvent[]> {
-    try {
-      const data = await fs.readFile(this.mentionsFile, 'utf-8');
-      return JSON.parse(data);
-    } catch {
-      return [];
-    }
+  // Database-based mention tracking replaces file-based system
+  async isInteractionProcessed(tweetId: string): Promise<boolean> {
+    return await db.isInteractionProcessed('twitter', tweetId);
   }
 
-  async saveMentions(mentions: MentionEvent[]): Promise<void> {
-    await fs.mkdir(path.dirname(this.mentionsFile), { recursive: true });
-    await fs.writeFile(this.mentionsFile, JSON.stringify(mentions, null, 2));
+  async recordInteraction(tweet: TweetData, type: 'mention' | 'watch' = 'mention'): Promise<void> {
+    await db.recordInteraction(
+      'twitter',
+      tweet.id,
+      type,
+      tweet.authorId,
+      {
+        text: tweet.text,
+        createdAt: tweet.createdAt,
+        source: 'twitter_monitor'
+      }
+    );
   }
 
   async checkMentions(): Promise<void> {
     try {
       console.log('🔍 Checking for mentions...');
 
+      // Check rate limits
+      const canRead = await db.checkUsageLimit('twitter', 'read', 100);
+      if (!canRead) {
+        console.log('⏰ Twitter read limit reached for today');
+        return;
+      }
+
       // Use single search query to avoid rate limiting (Twitter free API: 1 search per 15 minutes)
-      // Search for the most specific mention pattern
       const primaryQuery = '@darkregenaI';
 
       try {
         const tweets = await twitterClient.searchTweets(primaryQuery, 10);
+        await db.trackUsage('twitter', 'read', 1);
 
         for (const tweet of tweets) {
-          if (this.lastMentionId && tweet.id <= this.lastMentionId) {
-            continue; // Skip already processed tweets
+          // Check if we've already processed this tweet
+          const alreadyProcessed = await this.isInteractionProcessed(tweet.id);
+
+          if (alreadyProcessed) {
+            console.log(`⏭️ Tweet ${tweet.id} already processed, skipping`);
+            continue;
           }
 
-          const mentions = await this.loadMentions();
-          const existing = mentions.find(m => m.id === tweet.id);
+          // Record the new interaction
+          await this.recordInteraction(tweet, 'mention');
 
-          if (!existing) {
-            const mention: MentionEvent = {
-              id: tweet.id,
-              authorId: tweet.authorId || 'unknown',
-              text: tweet.text,
-              createdAt: tweet.createdAt,
-              processed: false
-            };
-
-            mentions.push(mention);
-            await this.saveMentions(mentions);
-
-            console.log(`📢 New mention found: ${tweet.text.slice(0, 100)}...`);
-            await this.respondToMention(mention);
-          }
+          console.log(`📢 New mention found: ${tweet.text.slice(0, 100)}...`);
+          await this.respondToMention(tweet);
         }
       } catch (searchError: unknown) {
         const error = searchError as { message?: string; code?: number };
@@ -116,35 +119,51 @@ class TwitterMonitor {
         throw searchError; // Re-throw other errors
       }
 
-      // Update last checked mention ID
-      const allMentions = await this.loadMentions();
-      if (allMentions.length > 0) {
-        this.lastMentionId = Math.max(...allMentions.map(m => parseInt(m.id))).toString();
-      }
-
     } catch (error) {
       console.error('Error checking mentions:', error);
     }
   }
 
-  async respondToMention(mention: MentionEvent): Promise<void> {
+  async respondToMention(tweet: TweetData): Promise<void> {
     try {
       // Check rate limiting
-      if (!await this.canRespond()) {
-        console.log('⏱️ Rate limit reached, skipping response');
+      const canWrite = await db.checkUsageLimit('twitter', 'write', 50);
+      if (!canWrite) {
+        console.log('⏱️ Twitter write limit reached, skipping response');
         return;
       }
 
-      // Create conversation context
-      const conversationId = `twitter_mention_${mention.id}`;
-      const conversation: Conversation = {
+      // Create conversation in database
+      const conversationId = await db.createConversation(
+        'twitter',
+        tweet.id,
+        tweet.authorId,
+        {
+          tweetText: tweet.text,
+          tweetCreatedAt: tweet.createdAt,
+          source: 'twitter_monitor'
+        }
+      );
+
+      if (!conversationId) {
+        throw new Error('Failed to create conversation in database');
+      }
+
+      // Add user message to conversation
+      await db.addMessage(conversationId, 'user', tweet.text, {
+        tweetId: tweet.id,
+        authorId: tweet.authorId
+      });
+
+      // Create conversation context for AI generation (legacy format)
+      const conversation = {
         id: conversationId,
-        platform: 'twitter',
-        platformId: mention.id,
+        platform: 'twitter' as const,
+        platformId: tweet.id,
         messages: [{
           id: crypto.randomUUID(),
-          role: 'user',
-          content: mention.text,
+          role: 'user' as const,
+          content: tweet.text,
           timestamp: new Date().toISOString()
         }],
         createdAt: new Date().toISOString()
@@ -152,21 +171,26 @@ class TwitterMonitor {
 
       // Generate AI response
       const response = await generateResponse(conversation);
+      await db.trackUsage('gemini', 'generate', 1);
 
       // Post reply
-      const replyId = await twitterClient.postTweet(response, mention.id);
+      const replyId = await twitterClient.postTweet(response, tweet.id);
+      await db.trackUsage('twitter', 'write', 1);
+
       console.log(`✅ Replied to mention: ${replyId}`);
 
-      // Mark as processed
-      const mentions = await this.loadMentions();
-      const mentionIndex = mentions.findIndex(m => m.id === mention.id);
-      if (mentionIndex !== -1) {
-        mentions[mentionIndex].processed = true;
-        await this.saveMentions(mentions);
-      }
+      // Add assistant message to conversation
+      await db.addMessage(conversationId, 'assistant', response, {
+        replyTweetId: replyId
+      });
+
+      // Mark interaction as processed
+      await db.markInteractionProcessed('twitter', tweet.id, conversationId);
 
     } catch (error) {
       console.error('Error responding to mention:', error);
+      // Mark as processed to avoid retry loops
+      await db.markInteractionProcessed('twitter', tweet.id);
     }
   }
 
@@ -198,30 +222,56 @@ class TwitterMonitor {
 
     if (hoursDiff > 24) return false;
 
-    // Check if we already responded
-    const mentions = await this.loadMentions();
-    const alreadyProcessed = mentions.find(m => m.id === tweet.id);
-
+    // Check if we already processed this interaction
+    const alreadyProcessed = await this.isInteractionProcessed(tweet.id);
     return !alreadyProcessed;
   }
 
   private async respondToAccountTweet(tweet: TweetData): Promise<void> {
     try {
-      if (!await this.canRespond()) {
-        console.log('⏱️ Rate limit reached, skipping account response');
+      // Check rate limiting
+      const canWrite = await db.checkUsageLimit('twitter', 'write', 50);
+      if (!canWrite) {
+        console.log('⏱️ Twitter write limit reached, skipping account response');
         return;
       }
 
-      // Create conversation context
-      const conversationId = `twitter_watch_${tweet.id}`;
-      const conversation: Conversation = {
+      // Record the interaction
+      await this.recordInteraction(tweet, 'watch');
+
+      // Create conversation in database
+      const conversationId = await db.createConversation(
+        'twitter',
+        tweet.id,
+        tweet.authorId,
+        {
+          tweetText: tweet.text,
+          tweetCreatedAt: tweet.createdAt,
+          source: 'watched_account'
+        }
+      );
+
+      if (!conversationId) {
+        throw new Error('Failed to create conversation in database');
+      }
+
+      // Add user message to conversation
+      const userMessage = `Responding to ${tweet.authorId}: ${tweet.text}`;
+      await db.addMessage(conversationId, 'user', userMessage, {
+        tweetId: tweet.id,
+        authorId: tweet.authorId,
+        originalText: tweet.text
+      });
+
+      // Create conversation context for AI generation
+      const conversation = {
         id: conversationId,
-        platform: 'twitter',
+        platform: 'twitter' as const,
         platformId: tweet.id,
         messages: [{
           id: crypto.randomUUID(),
-          role: 'user',
-          content: `Responding to ${tweet.authorId}: ${tweet.text}`,
+          role: 'user' as const,
+          content: userMessage,
           timestamp: new Date().toISOString()
         }],
         createdAt: new Date().toISOString()
@@ -229,50 +279,65 @@ class TwitterMonitor {
 
       // Generate contextual response
       const response = await generateResponse(conversation);
+      await db.trackUsage('gemini', 'generate', 1);
 
       // Post reply
       const replyId = await twitterClient.postTweet(response, tweet.id);
+      await db.trackUsage('twitter', 'write', 1);
+
       console.log(`✅ Replied to watched account tweet: ${replyId}`);
 
-      // Track this interaction
-      const mentions = await this.loadMentions();
-      mentions.push({
-        id: tweet.id,
-        authorId: tweet.authorId || 'unknown',
-        text: tweet.text,
-        createdAt: tweet.createdAt,
-        processed: true
+      // Add assistant message to conversation
+      await db.addMessage(conversationId, 'assistant', response, {
+        replyTweetId: replyId
       });
-      await this.saveMentions(mentions);
+
+      // Mark interaction as processed
+      await db.markInteractionProcessed('twitter', tweet.id, conversationId);
 
     } catch (error) {
       console.error('Error responding to account tweet:', error);
+      // Mark as processed to avoid retry loops
+      await db.markInteractionProcessed('twitter', tweet.id);
     }
   }
 
-  private async canRespond(): Promise<boolean> {
-    // Check hourly rate limit
-    const mentions = await this.loadMentions();
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-
-    const recentResponses = mentions.filter(m =>
-      m.processed && new Date(m.createdAt) > oneHourAgo
-    );
-
-    return recentResponses.length < this.config.maxResponsesPerHour;
-  }
+  // Rate limiting is now handled by database-based usage tracking
 
   async postDailyTweet(): Promise<void> {
     try {
       console.log('🌅 Posting daily tweet...');
 
+      // Check write limits
+      const canWrite = await db.checkUsageLimit('twitter', 'write', 50);
+      if (!canWrite) {
+        console.log('⏰ Twitter write limit reached, skipping daily tweet');
+        return;
+      }
+
       // Generate daily insight
       const { generateInsight } = await import('../services/ai');
       const insight = await generateInsight();
+      await db.trackUsage('gemini', 'generate', 1);
 
       // Post the tweet
       const tweetId = await twitterClient.postTweet(insight);
+      await db.trackUsage('twitter', 'write', 1);
+
       console.log(`✅ Daily tweet posted: ${tweetId}`);
+
+      // Record this as a proactive post
+      await db.recordInteraction(
+        'twitter',
+        tweetId,
+        'post',
+        undefined,
+        {
+          content: insight,
+          type: 'daily_insight',
+          source: 'scheduled_post'
+        }
+      );
 
     } catch (error) {
       console.error('Error posting daily tweet:', error);

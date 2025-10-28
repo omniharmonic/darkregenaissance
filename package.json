@@ -18,6 +18,7 @@
     "@google/generative-ai": "^0.24.1",
     "@react-three/drei": "^9.114.0",
     "@react-three/fiber": "^8.17.10",
+    "@supabase/supabase-js": "^2.76.1",
     "dotenv": "^17.2.3",
     "next": "14.2.33",
     "node-telegram-bot-api": "^0.66.0",
