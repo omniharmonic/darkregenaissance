@@ -26,9 +26,9 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
   };
 
   return (
-    <div className="flex items-end gap-2 md:gap-3">
+    <div className="flex items-end gap-2 md:gap-3 w-full">
       <span className="text-[#00ff41] text-sm md:text-sm shrink-0 mb-1">{'>'}</span>
-      <div className="flex-1 relative">
+      <div className="flex-1 min-w-0 relative">
         <textarea
           ref={inputRef}
           value={input}
@@ -61,7 +61,7 @@ export function TerminalInput({ onSendMessage, disabled }: TerminalInputProps) {
       {input.trim() && !disabled && (
         <button
           onClick={handleSend}
-          className="text-[#00ff41] hover:text-[#6bffb8] active:text-[#6bffb8] transition-colors text-sm px-3 py-2 md:px-3 md:py-1 border border-[#00ff41]/30 rounded-md hover:border-[#6bffb8]/50 active:border-[#6bffb8]/50 touch-manipulation bg-[#00ff41]/5 hover:bg-[#6bffb8]/10 active:bg-[#6bffb8]/10 min-h-[36px] md:min-h-[32px] min-w-[44px] md:min-w-auto flex items-center justify-center shrink-0"
+          className="text-[#00ff41] hover:text-[#6bffb8] active:text-[#6bffb8] transition-colors text-sm px-2 py-2 md:px-3 md:py-1 border border-[#00ff41]/30 rounded-md hover:border-[#6bffb8]/50 active:border-[#6bffb8]/50 touch-manipulation bg-[#00ff41]/5 hover:bg-[#6bffb8]/10 active:bg-[#6bffb8]/10 min-h-[36px] md:min-h-[32px] w-10 md:w-auto flex items-center justify-center shrink-0"
         >
           <svg
             width="16"
