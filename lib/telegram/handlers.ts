@@ -1,5 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { saveConversation, loadConversation } from '../services/conversation';
+import { db } from '../services/database';
 import { generateResponse } from '../services/ai';
 
 const WELCOME_MESSAGE = `🌲 welcome to the mycelial network
@@ -45,6 +45,30 @@ const WISDOM_LIBRARY = [
   "the darkest soil grows the strongest trees.",
 ];
 
+// Helper function to get or create Telegram conversation
+async function getOrCreateTelegramConversation(
+  chatId: string,
+  metadata?: Record<string, any>
+): Promise<string | null> {
+  // Try to find existing conversation
+  const existing = await db.getConversationByPlatformId('telegram', chatId);
+  if (existing) {
+    return existing.id;
+  }
+
+  // Create new conversation
+  return await db.createConversation(
+    'telegram',
+    chatId,
+    metadata?.userId,
+    {
+      ...metadata,
+      chatType: 'telegram',
+      createdAt: new Date().toISOString()
+    }
+  );
+}
+
 export async function handleStart(msg: TelegramBot.Message, bot: TelegramBot) {
   const chatId = msg.chat.id;
   await bot.sendMessage(chatId, WELCOME_MESSAGE, {
@@ -81,37 +105,46 @@ export async function handleAsk(msg: TelegramBot.Message, match: RegExpExecArray
     // Send typing indicator
     await bot.sendChatAction(chatId, 'typing');
 
-    // Load existing conversation
-    const conversationId = `telegram_${chatId}`;
-    const conversation = await loadConversation(conversationId) || {
+    // Get or create conversation in database
+    const chatIdStr = chatId.toString();
+    let conversationId = await getOrCreateTelegramConversation(chatIdStr, {
+      command: 'ask',
+      userId: msg.from?.id?.toString(),
+      username: msg.from?.username,
+      firstName: msg.from?.first_name
+    });
+
+    if (!conversationId) {
+      throw new Error('Failed to create conversation');
+    }
+
+    // Add user message to database
+    await db.addMessage(conversationId, 'user', question, {
+      messageId: msg.message_id,
+      userId: msg.from?.id,
+      username: msg.from?.username
+    });
+
+    // Create conversation object for AI generation (legacy format)
+    const conversation = {
       id: conversationId,
       platform: 'telegram' as const,
-      platformId: chatId.toString(),
-      messages: [],
+      platformId: chatIdStr,
+      messages: [{
+        id: crypto.randomUUID(),
+        role: 'user' as const,
+        content: question,
+        timestamp: new Date().toISOString()
+      }],
       createdAt: new Date().toISOString()
     };
 
-    // Add user message
-    conversation.messages.push({
-      id: crypto.randomUUID(),
-      role: 'user',
-      content: question,
-      timestamp: new Date().toISOString()
-    });
-
     // Generate AI response
     const response = await generateResponse(conversation);
+    await db.trackUsage('gemini', 'generate', 1);
 
-    // Add AI message
-    conversation.messages.push({
-      id: crypto.randomUUID(),
-      role: 'assistant',
-      content: response,
-      timestamp: new Date().toISOString()
-    });
-
-    // Save conversation
-    await saveConversation(conversation);
+    // Add AI response to database
+    await db.addMessage(conversationId, 'assistant', response);
 
     // Send response
     await bot.sendMessage(chatId, `🍄 ${response}`, {
@@ -138,37 +171,49 @@ export async function handleMessage(msg: TelegramBot.Message, bot: TelegramBot) 
     // Send typing indicator
     await bot.sendChatAction(chatId, 'typing');
 
-    // Load existing conversation
-    const conversationId = `telegram_${chatId}`;
-    const conversation = await loadConversation(conversationId) || {
+    // Get or create conversation in database
+    const chatIdStr = chatId.toString();
+    let conversationId = await getOrCreateTelegramConversation(chatIdStr, {
+      type: 'direct_message',
+      userId: msg.from?.id?.toString(),
+      username: msg.from?.username,
+      firstName: msg.from?.first_name
+    });
+
+    if (!conversationId) {
+      throw new Error('Failed to create conversation');
+    }
+
+    // Add user message to database
+    await db.addMessage(conversationId, 'user', text, {
+      messageId: msg.message_id,
+      userId: msg.from?.id,
+      username: msg.from?.username
+    });
+
+    // Get recent messages for context (up to 10 messages)
+    const recentMessages = await db.getMessages(conversationId, 10);
+
+    // Create conversation object for AI generation with recent context
+    const conversation = {
       id: conversationId,
       platform: 'telegram' as const,
-      platformId: chatId.toString(),
-      messages: [],
+      platformId: chatIdStr,
+      messages: recentMessages.map(msg => ({
+        id: msg.id,
+        role: msg.role,
+        content: msg.content,
+        timestamp: msg.created_at
+      })),
       createdAt: new Date().toISOString()
     };
 
-    // Add user message
-    conversation.messages.push({
-      id: crypto.randomUUID(),
-      role: 'user',
-      content: text,
-      timestamp: new Date().toISOString()
-    });
-
     // Generate AI response
     const response = await generateResponse(conversation);
+    await db.trackUsage('gemini', 'generate', 1);
 
-    // Add AI message
-    conversation.messages.push({
-      id: crypto.randomUUID(),
-      role: 'assistant',
-      content: response,
-      timestamp: new Date().toISOString()
-    });
-
-    // Save conversation
-    await saveConversation(conversation);
+    // Add AI response to database
+    await db.addMessage(conversationId, 'assistant', response);
 
     // Send response
     await bot.sendMessage(chatId, `🍄 ${response}`, {
@@ -218,37 +263,58 @@ export async function handleMention(msg: TelegramBot.Message, bot: TelegramBot) 
       cleanedText = "hello from the underground";
     }
 
-    // Load existing conversation
-    const conversationId = `telegram_${chatId}`;
-    const conversation = await loadConversation(conversationId) || {
+    // Get or create conversation in database
+    const chatIdStr = chatId.toString();
+    let conversationId = await getOrCreateTelegramConversation(chatIdStr, {
+      type: 'group_mention',
+      userId: msg.from?.id?.toString(),
+      username: msg.from?.username,
+      firstName: msg.from?.first_name,
+      chatType: msg.chat.type,
+      chatTitle: msg.chat.title
+    });
+
+    if (!conversationId) {
+      throw new Error('Failed to create conversation');
+    }
+
+    // Prepare user message content
+    const userMessage = `${msg.from?.first_name || 'someone'} mentioned you in a group: ${cleanedText}`;
+
+    // Add user message to database
+    await db.addMessage(conversationId, 'user', userMessage, {
+      messageId: msg.message_id,
+      userId: msg.from?.id,
+      username: msg.from?.username,
+      originalText: text,
+      cleanedText: cleanedText
+    });
+
+    // Get recent messages for context (up to 5 for group chats)
+    const recentMessages = await db.getMessages(conversationId, 5);
+
+    // Create conversation object for AI generation with recent context
+    const conversation = {
       id: conversationId,
       platform: 'telegram' as const,
-      platformId: chatId.toString(),
-      messages: [],
+      platformId: chatIdStr,
+      messages: recentMessages.map(msg => ({
+        id: msg.id,
+        role: msg.role,
+        content: msg.content,
+        timestamp: msg.created_at
+      })),
       createdAt: new Date().toISOString()
     };
 
-    // Add user message
-    conversation.messages.push({
-      id: crypto.randomUUID(),
-      role: 'user',
-      content: `${msg.from?.first_name || 'someone'} mentioned you in a group: ${cleanedText}`,
-      timestamp: new Date().toISOString()
-    });
-
     // Generate AI response
     const response = await generateResponse(conversation);
+    await db.trackUsage('gemini', 'generate', 1);
 
-    // Add AI message
-    conversation.messages.push({
-      id: crypto.randomUUID(),
-      role: 'assistant',
-      content: response,
-      timestamp: new Date().toISOString()
+    // Add AI response to database
+    await db.addMessage(conversationId, 'assistant', response, {
+      replyToMessageId: msg.message_id
     });
-
-    // Save conversation
-    await saveConversation(conversation);
 
     // Send response
     await bot.sendMessage(chatId, `🍄 ${response}`, {
