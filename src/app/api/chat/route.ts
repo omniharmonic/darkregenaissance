@@ -59,14 +59,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Load existing conversation context from database
-    let conversationHistory: any[] = [];
+    let conversationHistory: Array<{
+      role: 'user' | 'assistant';
+      content: string;
+      timestamp: string;
+      tokens?: number;
+    }> = [];
     if (conversationId) {
       const dbMessages = await db.getMessages(finalConversationId, 20); // Get up to 20 recent messages
       conversationHistory = dbMessages.map(msg => ({
-        role: msg.role,
+        role: msg.role as 'user' | 'assistant',
         content: msg.content,
         timestamp: msg.created_at,
-        tokens: msg.metadata?.tokens
+        tokens: typeof msg.metadata === 'object' && msg.metadata !== null && 'tokens' in msg.metadata
+          ? msg.metadata.tokens as number | undefined
+          : undefined
       }));
     }
 

@@ -48,7 +48,7 @@ const WISDOM_LIBRARY = [
 // Helper function to get or create Telegram conversation
 async function getOrCreateTelegramConversation(
   chatId: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): Promise<string | null> {
   // Try to find existing conversation
   const existing = await db.getConversationByPlatformId('telegram', chatId);
@@ -60,7 +60,7 @@ async function getOrCreateTelegramConversation(
   return await db.createConversation(
     'telegram',
     chatId,
-    metadata?.userId,
+    metadata?.userId as string | undefined,
     {
       ...metadata,
       chatType: 'telegram',
@@ -107,7 +107,7 @@ export async function handleAsk(msg: TelegramBot.Message, match: RegExpExecArray
 
     // Get or create conversation in database
     const chatIdStr = chatId.toString();
-    let conversationId = await getOrCreateTelegramConversation(chatIdStr, {
+    const conversationId = await getOrCreateTelegramConversation(chatIdStr, {
       command: 'ask',
       userId: msg.from?.id?.toString(),
       username: msg.from?.username,
@@ -173,7 +173,7 @@ export async function handleMessage(msg: TelegramBot.Message, bot: TelegramBot) 
 
     // Get or create conversation in database
     const chatIdStr = chatId.toString();
-    let conversationId = await getOrCreateTelegramConversation(chatIdStr, {
+    const conversationId = await getOrCreateTelegramConversation(chatIdStr, {
       type: 'direct_message',
       userId: msg.from?.id?.toString(),
       username: msg.from?.username,
@@ -265,7 +265,7 @@ export async function handleMention(msg: TelegramBot.Message, bot: TelegramBot) 
 
     // Get or create conversation in database
     const chatIdStr = chatId.toString();
-    let conversationId = await getOrCreateTelegramConversation(chatIdStr, {
+    const conversationId = await getOrCreateTelegramConversation(chatIdStr, {
       type: 'group_mention',
       userId: msg.from?.id?.toString(),
       username: msg.from?.username,
