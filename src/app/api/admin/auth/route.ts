@@ -8,13 +8,25 @@ export async function POST(request: NextRequest) {
     // Check against environment variable
     const adminPassword = process.env.ADMIN_PASSWORD;
 
+    console.log('Auth attempt:', { 
+      hasPassword: !!password, 
+      hasEnvPassword: !!adminPassword,
+      env: process.env.NODE_ENV 
+    });
+
     if (!adminPassword) {
-      return NextResponse.json({ error: 'Admin access not configured' }, { status: 500 });
+      console.error('ADMIN_PASSWORD environment variable not set!');
+      return NextResponse.json({ 
+        error: 'Admin password not configured in environment variables. Please add ADMIN_PASSWORD to Vercel.' 
+      }, { status: 500 });
     }
 
     if (password !== adminPassword) {
+      console.log('Password mismatch');
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
     }
+
+    console.log('Auth successful');
 
     // Set secure cookie with expiration
     const cookieStore = cookies();
