@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     switch (action) {
       case 'check-mentions':
         try {
-          const { stdout, stderr } = await execAsync('npm run monitor', {
+          const { stdout } = await execAsync('npm run monitor', {
             cwd: process.cwd(),
             timeout: 30000
           });
