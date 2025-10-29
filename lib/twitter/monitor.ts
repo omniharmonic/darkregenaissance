@@ -33,7 +33,7 @@ class TwitterMonitor {
     this.mentionsFile = path.join(process.cwd(), 'data', 'twitter', 'mentions.json');
     this.config = {
       watchedAccounts: [],
-      mentionKeywords: ['@darkregenaI', 'dark regenaissance', 'mycelial'],
+      mentionKeywords: ['@darkregenaI', '@darkregenai', 'dark regenaissance', 'mycelial'],
       dailyTweetTimes: ['09:00', '15:00', '21:00'], // 3 times per day
       maxResponsesPerHour: 5
     };
@@ -90,7 +90,8 @@ class TwitterMonitor {
       }
 
       // Use single search query to avoid rate limiting (Twitter free API: 1 search per 15 minutes)
-      const primaryQuery = '@darkregenaI';
+      // Test both handle variants to ensure we catch all mentions
+      const primaryQuery = '@darkregenaI OR @darkregenai';
 
       try {
         const tweets = await twitterClient.searchTweets(primaryQuery, 10);

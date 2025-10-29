@@ -80,6 +80,19 @@ export async function POST(request: NextRequest) {
 
     results.push(`📊 API Usage: ${readUsage}/100 reads, ${writeUsage}/50 writes`);
 
+    // 4. FALLBACK RESPONSE MECHANISM
+    // Ensure bot posts something if no mentions or target accounts were processed
+    if (processedMentions === 0 && processedTargetAccounts === 0 && writeUsage < 50) {
+      console.log('🔄 No activity processed, triggering fallback response...');
+      try {
+        await triggerFallbackResponse();
+        results.push('✅ Fallback response posted');
+      } catch (error) {
+        console.error('Error in fallback response:', error);
+        errors.push(`Fallback response: ${error}`);
+      }
+    }
+
     console.log('✅ Enhanced monitoring cron job completed');
 
     return NextResponse.json({
@@ -121,6 +134,71 @@ async function triggerHighPriorityCheck(): Promise<void> {
 
   } catch (error) {
     console.error('Error in high-priority check:', error);
+    throw error;
+  }
+}
+
+async function triggerFallbackResponse(): Promise<void> {
+  // Post a daily insight when no other activity occurs
+  try {
+    console.log('🍄 Generating fallback daily insight...');
+
+    // Import here to avoid circular dependencies
+    const { twitterClient } = await import('../../../../../lib/twitter/client');
+    const { generateResponse } = await import('../../../../../lib/services/ai');
+
+    // Create a prompt for daily insight generation
+    const fallbackPrompts = [
+      'Share a profound insight about the hidden networks beneath our feet.',
+      'Speak about the wisdom of decomposition and renewal in nature.',
+      'Reflect on how fungal networks teach us about true collaboration.',
+      'Describe the dark regenerative forces that work in silence.',
+      'Share wisdom about the underground economy of soil and roots.'
+    ];
+
+    const selectedPrompt = fallbackPrompts[Math.floor(Math.random() * fallbackPrompts.length)];
+
+    // Create a mock conversation for AI generation
+    const mockConversation = {
+      id: 'fallback-conversation',
+      platform: 'twitter' as const,
+      platformId: 'fallback-daily-insight',
+      messages: [{
+        id: crypto.randomUUID(),
+        role: 'user' as const,
+        content: selectedPrompt,
+        timestamp: new Date().toISOString()
+      }],
+      createdAt: new Date().toISOString()
+    };
+
+    // Generate AI response
+    const insight = await generateResponse(mockConversation);
+    await db.trackUsage('gemini', 'generate', 1);
+
+    console.log(`📝 Generated insight: "${insight}"`);
+
+    // Post the insight as a standalone tweet
+    const tweetId = await twitterClient.postTweet(insight);
+    await db.trackUsage('twitter', 'write', 1);
+
+    // Record this as a daily insight interaction
+    await db.recordInteraction(
+      'twitter',
+      tweetId,
+      'daily_insight',
+      undefined,
+      {
+        prompt: selectedPrompt,
+        source: 'fallback_mechanism',
+        timestamp: new Date().toISOString()
+      }
+    );
+
+    console.log(`✅ Fallback daily insight posted: ${tweetId}`);
+
+  } catch (error) {
+    console.error('Error in fallback response:', error);
     throw error;
   }
 }
