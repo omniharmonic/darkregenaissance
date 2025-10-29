@@ -1,0 +1,1302 @@
+{
+  "lastUpdated": "2025-10-29T05:45:36.687Z",
+  "totalAccounts": 144,
+  "totalValidHandles": 144,
+  "categories": [
+    {
+      "name": "AI Acceleration",
+      "accounts": [
+        {
+          "name": "Sam Altman",
+          "handle": "sama",
+          "category": "AI Acceleration",
+          "notes": "OpenAI CEO",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 5,
+      "responseStrategy": "aggressive"
+    },
+    {
+      "name": "AI Acceleration / Tech CEO",
+      "accounts": [
+        {
+          "name": "Elon Musk",
+          "handle": "elonmusk",
+          "category": "AI Acceleration / Tech CEO",
+          "notes": "Tesla SpaceX X owner",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 5,
+      "responseStrategy": "aggressive"
+    },
+    {
+      "name": "AI Research",
+      "accounts": [
+        {
+          "name": "Dario Amodei",
+          "handle": "DarioAmodei",
+          "category": "AI Research",
+          "notes": "Anthropic CEO",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Demis Hassabis",
+          "handle": "demishassabis",
+          "category": "AI Research",
+          "notes": "DeepMind CEO - Nobel laureate",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Mustafa Suleyman",
+          "handle": "mustafasuleymn",
+          "category": "AI Research",
+          "notes": "Microsoft AI CEO",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Yann LeCun",
+          "handle": "ylecun",
+          "category": "AI Research",
+          "notes": "Meta Chief AI Scientist",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Andrej Karpathy",
+          "handle": "karpathy",
+          "category": "AI Research",
+          "notes": "Ex-Tesla Autopilot Ex-OpenAI",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Ian Goodfellow",
+          "handle": "goodfellow_ian",
+          "category": "AI Research",
+          "notes": "Apple GAN inventor",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Jeremy Howard",
+          "handle": "jeremyphoward",
+          "category": "AI Research",
+          "notes": "Fast.ai cofounder",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Yoshua Bengio",
+          "handle": "yoshuabengio",
+          "category": "AI Research",
+          "notes": "Turing Award winner Montreal",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Yann LeCun",
+          "handle": "ylecun",
+          "category": "AI Research",
+          "notes": "Meta Chief AI Scientist - Nobel considerations",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Clément Delangue",
+          "handle": "ClementDelangue",
+          "category": "AI Research",
+          "notes": "HuggingFace CEO",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 5,
+      "responseStrategy": "aggressive"
+    },
+    {
+      "name": "AI Research / Ethics",
+      "accounts": [
+        {
+          "name": "Geoffrey Hinton",
+          "handle": "geoffreyhinton",
+          "category": "AI Research / Ethics",
+          "notes": "Nobel laureate - left Google over AI concerns",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Fei-Fei Li",
+          "handle": "drfeifei",
+          "category": "AI Research / Ethics",
+          "notes": "Stanford HAI codirector",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 5,
+      "responseStrategy": "aggressive"
+    },
+    {
+      "name": "VC / Accelerationist",
+      "accounts": [
+        {
+          "name": "Marc Andreessen",
+          "handle": "pmarca",
+          "category": "VC / Accelerationist",
+          "notes": "a16z cofounder",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Peter Thiel",
+          "handle": "peterthiel",
+          "category": "VC / Accelerationist",
+          "notes": "Palantir cofounder Founders Fund",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 4,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Tech CEO",
+      "accounts": [
+        {
+          "name": "Jensen Huang",
+          "handle": "nv_jen",
+          "category": "Tech CEO",
+          "notes": "NVIDIA CEO",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Satya Nadella",
+          "handle": "satyanadella",
+          "category": "Tech CEO",
+          "notes": "Microsoft CEO",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Sundar Pichai",
+          "handle": "sundarpichai",
+          "category": "Tech CEO",
+          "notes": "Google CEO",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Mark Zuckerberg",
+          "handle": "finkd",
+          "category": "Tech CEO",
+          "notes": "Meta CEO",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Tim Cook",
+          "handle": "tim_cook",
+          "category": "Tech CEO",
+          "notes": "Apple CEO",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 4,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Cultural Amplifier",
+      "accounts": [
+        {
+          "name": "Joe Rogan",
+          "handle": "joerogan",
+          "category": "Cultural Amplifier",
+          "notes": "Podcast host",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Lex Fridman",
+          "handle": "lexfridman",
+          "category": "Cultural Amplifier",
+          "notes": "AI researcher podcast host",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Tim Ferriss",
+          "handle": "tferriss",
+          "category": "Cultural Amplifier",
+          "notes": "Author podcast host",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Jordan Peterson",
+          "handle": "jordanbpeterson",
+          "category": "Cultural Amplifier",
+          "notes": "Psychologist public intellectual",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Sam Harris",
+          "handle": "SamHarrisOrg",
+          "category": "Cultural Amplifier",
+          "notes": "Neuroscientist podcast host",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Eric Weinstein",
+          "handle": "EricRWeinstein",
+          "category": "Cultural Amplifier",
+          "notes": "Thiel Capital managing director",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Bret Weinstein",
+          "handle": "BretWeinstein",
+          "category": "Cultural Amplifier",
+          "notes": "Evolutionary biologist podcast host",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 4,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "VC / Cultural Bridge",
+      "accounts": [
+        {
+          "name": "Reid Hoffman",
+          "handle": "reidhoffman",
+          "category": "VC / Cultural Bridge",
+          "notes": "LinkedIn cofounder Greylock",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 3,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "VC / Cultural",
+      "accounts": [
+        {
+          "name": "Naval Ravikant",
+          "handle": "naval",
+          "category": "VC / Cultural",
+          "notes": "AngelList founder",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Chamath Palihapitiya",
+          "handle": "chamath",
+          "category": "VC / Cultural",
+          "notes": "Social Capital",
+          "hasValidHandle": true
+        },
+        {
+          "name": "David Sacks",
+          "handle": "DavidSacks",
+          "category": "VC / Cultural",
+          "notes": "Craft Ventures",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 3,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "AI Ethics",
+      "accounts": [
+        {
+          "name": "Timnit Gebru",
+          "handle": "timnitGebru",
+          "category": "AI Ethics",
+          "notes": "DAIR Institute founder",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Kate Crawford",
+          "handle": "katecrawford",
+          "category": "AI Ethics",
+          "notes": "AI Now Institute",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 3,
+      "responseStrategy": "conservative"
+    },
+    {
+      "name": "Cultural Bridge",
+      "accounts": [
+        {
+          "name": "Yuval Noah Harari",
+          "handle": "harari_yuval",
+          "category": "Cultural Bridge",
+          "notes": "Historian Sapiens author",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Kevin Kelly",
+          "handle": "kevin2kelly",
+          "category": "Cultural Bridge",
+          "notes": "Wired cofounder futurist",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Tyler Cowen",
+          "handle": "tylercowen",
+          "category": "Cultural Bridge",
+          "notes": "Economist Marginal Revolution",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 3,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "AI Safety Organization",
+      "accounts": [
+        {
+          "name": "Center for AI Safety",
+          "handle": "AIxrisk",
+          "category": "AI Safety Organization",
+          "notes": "Existential risk focused",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Machine Intelligence Research",
+          "handle": "MIRIorg",
+          "category": "AI Safety Organization",
+          "notes": "AI alignment research",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Future of Life Institute",
+          "handle": "FLIxrisk",
+          "category": "AI Safety Organization",
+          "notes": "AI existential risk",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 3,
+      "responseStrategy": "conservative"
+    },
+    {
+      "name": "Crypto / Accelerationist",
+      "accounts": [
+        {
+          "name": "Balaji Srinivasan",
+          "handle": "balajis",
+          "category": "Crypto / Accelerationist",
+          "notes": "Former Coinbase CTO",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Vitalik Buterin",
+          "handle": "VitalikButerin",
+          "category": "Crypto / Accelerationist",
+          "notes": "Ethereum cofounder",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Brian Armstrong",
+          "handle": "brian_armstrong",
+          "category": "Crypto / Accelerationist",
+          "notes": "Coinbase CEO",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Finance / VC",
+      "accounts": [
+        {
+          "name": "Bill Ackman",
+          "handle": "BillAckman",
+          "category": "Finance / VC",
+          "notes": "Pershing Square",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Tech Ethics",
+      "accounts": [
+        {
+          "name": "Cathy O'Neil",
+          "handle": "mathbabedotorg",
+          "category": "Tech Ethics",
+          "notes": "Author of Weapons of Math Destruction",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Shoshana Zuboff",
+          "handle": "shoshanazuboff",
+          "category": "Tech Ethics",
+          "notes": "Surveillance capitalism scholar",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Zeynep Tufekci",
+          "handle": "zeynep",
+          "category": "Tech Ethics",
+          "notes": "Sociologist tech critic",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Meredith Whittaker",
+          "handle": "Mer__edith",
+          "category": "Tech Ethics",
+          "notes": "Signal president AI Now cofounder",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "conservative"
+    },
+    {
+      "name": "AI Safety",
+      "accounts": [
+        {
+          "name": "Stuart Russell",
+          "handle": "stuartjrussell",
+          "category": "AI Safety",
+          "notes": "UC Berkeley AI safety expert",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "conservative"
+    },
+    {
+      "name": "Cultural Bridge / Futurist",
+      "accounts": [
+        {
+          "name": "Ray Kurzweil",
+          "handle": "RayKurzweil",
+          "category": "Cultural Bridge / Futurist",
+          "notes": "Google engineering director singularity",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Crypto / VC",
+      "accounts": [
+        {
+          "name": "Chris Dixon",
+          "handle": "cdixon",
+          "category": "Crypto / VC",
+          "notes": "a16z crypto",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "AI Research / Education",
+      "accounts": [
+        {
+          "name": "Andrew Ng",
+          "handle": "AndrewYNg",
+          "category": "AI Research / Education",
+          "notes": "Coursera cofounder Stanford",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "aggressive"
+    },
+    {
+      "name": "AI Ethics / Journalism",
+      "accounts": [
+        {
+          "name": "Karen Hao",
+          "handle": "_KarenHao",
+          "category": "AI Ethics / Journalism",
+          "notes": "Algorithm Watch reporter",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "conservative"
+    },
+    {
+      "name": "AI Corporation",
+      "accounts": [
+        {
+          "name": "OpenAI",
+          "handle": "OpenAI",
+          "category": "AI Corporation",
+          "notes": "ChatGPT GPT-4 corporate account",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Anthropic",
+          "handle": "AnthropicAI",
+          "category": "AI Corporation",
+          "notes": "Claude AI corporate account",
+          "hasValidHandle": true
+        },
+        {
+          "name": "DeepMind",
+          "handle": "DeepMind",
+          "category": "AI Corporation",
+          "notes": "Google AI subsidiary",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Microsoft AI",
+          "handle": "MSFTResearch",
+          "category": "AI Corporation",
+          "notes": "Microsoft AI research division",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Google AI",
+          "handle": "GoogleAI",
+          "category": "AI Corporation",
+          "notes": "Google AI development",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Meta AI",
+          "handle": "MetaAI",
+          "category": "AI Corporation",
+          "notes": "Meta artificial intelligence research",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Tech Corporation",
+      "accounts": [
+        {
+          "name": "NVIDIA",
+          "handle": "nvidia",
+          "category": "Tech Corporation",
+          "notes": "AI chips GPU manufacturer",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Tesla",
+          "handle": "Tesla",
+          "category": "Tech Corporation",
+          "notes": "Electric vehicles autonomous driving",
+          "hasValidHandle": true
+        },
+        {
+          "name": "SpaceX",
+          "handle": "SpaceX",
+          "category": "Tech Corporation",
+          "notes": "Space exploration",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Apple",
+          "handle": "Apple",
+          "category": "Tech Corporation",
+          "notes": "Consumer tech AI integration",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Microsoft",
+          "handle": "Microsoft",
+          "category": "Tech Corporation",
+          "notes": "Cloud AI enterprise software",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Google",
+          "handle": "Google",
+          "category": "Tech Corporation",
+          "notes": "Search advertising AI cloud",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Meta",
+          "handle": "Meta",
+          "category": "Tech Corporation",
+          "notes": "Social media metaverse",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Amazon",
+          "handle": "amazon",
+          "category": "Tech Corporation",
+          "notes": "E-commerce cloud AWS",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Palantir",
+          "handle": "PalantirTech",
+          "category": "Tech Corporation",
+          "notes": "Data analytics surveillance",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "VC Firm",
+      "accounts": [
+        {
+          "name": "Andreessen Horowitz",
+          "handle": "a16z",
+          "category": "VC Firm",
+          "notes": "Major tech AI investor",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Founders Fund",
+          "handle": "foundersfund",
+          "category": "VC Firm",
+          "notes": "Thiel's investment firm",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Greylock Partners",
+          "handle": "GreylockVC",
+          "category": "VC Firm",
+          "notes": "Reid Hoffman's firm",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Sequoia Capital",
+          "handle": "sequoia",
+          "category": "VC Firm",
+          "notes": "Major Silicon Valley VC",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Khosla Ventures",
+          "handle": "KhoslaVentures",
+          "category": "VC Firm",
+          "notes": "AI climate tech investor",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Benchmark",
+          "handle": "benchmark",
+          "category": "VC Firm",
+          "notes": "Early stage VC firm",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Index Ventures",
+          "handle": "indexventures",
+          "category": "VC Firm",
+          "notes": "European and US tech VC",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Accel",
+          "handle": "accel",
+          "category": "VC Firm",
+          "notes": "Major tech growth investor",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Lightspeed Venture",
+          "handle": "lightspeedvp",
+          "category": "VC Firm",
+          "notes": "Consumer enterprise tech",
+          "hasValidHandle": true
+        },
+        {
+          "name": "General Catalyst",
+          "handle": "generalcatalyst",
+          "category": "VC Firm",
+          "notes": "Tech healthcare investor",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Insight Partners",
+          "handle": "insightpartners",
+          "category": "VC Firm",
+          "notes": "Growth stage tech",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Tiger Global",
+          "handle": "TigerGlobalMgmt",
+          "category": "VC Firm",
+          "notes": "Crossover tech investor",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Craft Ventures",
+          "handle": "craftventures",
+          "category": "VC Firm",
+          "notes": "David Sacks' firm",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "VC Firm / Accelerator",
+      "accounts": [
+        {
+          "name": "Y Combinator",
+          "handle": "ycombinator",
+          "category": "VC Firm / Accelerator",
+          "notes": "Startup accelerator",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Crypto Corporation",
+      "accounts": [
+        {
+          "name": "Coinbase",
+          "handle": "coinbase",
+          "category": "Crypto Corporation",
+          "notes": "Cryptocurrency exchange",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Ethereum",
+          "handle": "ethereum",
+          "category": "Crypto Corporation",
+          "notes": "Blockchain platform",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Binance",
+          "handle": "binance",
+          "category": "Crypto Corporation",
+          "notes": "Global crypto exchange",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Corporate Initiative",
+      "accounts": [
+        {
+          "name": "Climate Pledge",
+          "handle": "ClimatePledge",
+          "category": "Corporate Initiative",
+          "notes": "Amazon-led corporate climate commitment",
+          "hasValidHandle": true
+        },
+        {
+          "name": "UN Global Compact",
+          "handle": "globalcompact",
+          "category": "Corporate Initiative",
+          "notes": "UN corporate sustainability",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Sustainable Development",
+          "handle": "GlobalGoalsUN",
+          "category": "Corporate Initiative",
+          "notes": "UN SDG framework",
+          "hasValidHandle": true
+        },
+        {
+          "name": "B Lab",
+          "handle": "BCorporation",
+          "category": "Corporate Initiative",
+          "notes": "B Corp certification",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Corporate Institution",
+      "accounts": [
+        {
+          "name": "World Economic Forum",
+          "handle": "wef",
+          "category": "Corporate Institution",
+          "notes": "Davos global elite gathering",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Climate Investment",
+      "accounts": [
+        {
+          "name": "Breakthrough Energy",
+          "handle": "BEVentures",
+          "category": "Climate Investment",
+          "notes": "Bill Gates' climate tech fund",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Bezos Earth Fund",
+          "handle": "bezosearthfund",
+          "category": "Climate Investment",
+          "notes": "Jeff Bezos $10B climate pledge",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Climate Initiative",
+      "accounts": [
+        {
+          "name": "Breakthrough Energy Coalition",
+          "handle": "BE_Coalition",
+          "category": "Climate Initiative",
+          "notes": "Bezos Gates coalition",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Science Based Targets",
+          "handle": "ScienceTargets",
+          "category": "Climate Initiative",
+          "notes": "Corporate emissions framework",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Ceres",
+          "handle": "CeresNews",
+          "category": "Climate Initiative",
+          "notes": "Investor environmental advocacy",
+          "hasValidHandle": true
+        },
+        {
+          "name": "CDP",
+          "handle": "CDP",
+          "category": "Climate Initiative",
+          "notes": "Corporate environmental disclosure",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Ellen MacArthur Foundation",
+          "handle": "circulareconomy",
+          "category": "Climate Initiative",
+          "notes": "Circular economy corporate partnerships",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "AI Ethics Organization",
+      "accounts": [
+        {
+          "name": "AI Now Institute",
+          "handle": "AINowInstitute",
+          "category": "AI Ethics Organization",
+          "notes": "Kate Crawford's research institute",
+          "hasValidHandle": true
+        },
+        {
+          "name": "DAIR Institute",
+          "handle": "DAIRInstitute",
+          "category": "AI Ethics Organization",
+          "notes": "Timnit Gebru's independent research",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Algorithm Watch",
+          "handle": "algorithmwatch",
+          "category": "AI Ethics Organization",
+          "notes": "Algorithmic accountability",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Partnership on AI",
+          "handle": "PartnershipAI",
+          "category": "AI Ethics Organization",
+          "notes": "Multi-stakeholder AI ethics",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "conservative"
+    },
+    {
+      "name": "Movement",
+      "accounts": [
+        {
+          "name": "Effective Altruism",
+          "handle": "EffAltruism",
+          "category": "Movement",
+          "notes": "Longtermist EA community",
+          "hasValidHandle": true
+        },
+        {
+          "name": "80000 Hours",
+          "handle": "80000Hours",
+          "category": "Movement",
+          "notes": "EA career advice",
+          "hasValidHandle": true
+        },
+        {
+          "name": "GiveWell",
+          "handle": "GiveWell",
+          "category": "Movement",
+          "notes": "EA charity evaluator",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Centre for Effective Altruism",
+          "handle": "centreea",
+          "category": "Movement",
+          "notes": "EA coordination organization",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Funding Organization",
+      "accounts": [
+        {
+          "name": "Open Philanthropy",
+          "handle": "openphilanthropy",
+          "category": "Funding Organization",
+          "notes": "Major EA funder",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Research Organization",
+      "accounts": [
+        {
+          "name": "Rethink Priorities",
+          "handle": "RethinkPriority",
+          "category": "Research Organization",
+          "notes": "EA research",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Research Institution",
+      "accounts": [
+        {
+          "name": "Stanford HAI",
+          "handle": "StanfordHAI",
+          "category": "Research Institution",
+          "notes": "Human-centered AI institute",
+          "hasValidHandle": true
+        },
+        {
+          "name": "MIT Media Lab",
+          "handle": "medialab",
+          "category": "Research Institution",
+          "notes": "Technology research innovation",
+          "hasValidHandle": true
+        },
+        {
+          "name": "MIT CSAIL",
+          "handle": "MIT_CSAIL",
+          "category": "Research Institution",
+          "notes": "Computer science AI lab",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Berkeley AI Research",
+          "handle": "berkeley_ai",
+          "category": "Research Institution",
+          "notes": "UC Berkeley AI lab",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Carnegie Mellon AI",
+          "handle": "cmu_ai",
+          "category": "Research Institution",
+          "notes": "CMU artificial intelligence",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Allen Institute for AI",
+          "handle": "ai2_ai",
+          "category": "Research Institution",
+          "notes": "Paul Allen's AI research",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Philanthropic Corporation",
+      "accounts": [
+        {
+          "name": "Chan Zuckerberg Initiative",
+          "handle": "CZI_Research",
+          "category": "Philanthropic Corporation",
+          "notes": "Zuckerberg charitable LLC",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Gates Foundation",
+          "handle": "gatesfoundation",
+          "category": "Philanthropic Corporation",
+          "notes": "Bill Gates global health development",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Schmidt Futures",
+          "handle": "schmidtfutures",
+          "category": "Philanthropic Corporation",
+          "notes": "Eric Schmidt's philanthropic ventures",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Omidyar Network",
+          "handle": "omidyarnetwork",
+          "category": "Philanthropic Corporation",
+          "notes": "Pierre Omidyar's investment philanthropy",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Emerson Collective",
+          "handle": "EmersonCollective",
+          "category": "Philanthropic Corporation",
+          "notes": "Laurene Powell Jobs' organization",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Bloomberg Philanthropies",
+          "handle": "MikeBloomberg",
+          "category": "Philanthropic Corporation",
+          "notes": "Michael Bloomberg's giving",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Rockefeller Foundation",
+          "handle": "RockefellerFdn",
+          "category": "Philanthropic Corporation",
+          "notes": "Historic philanthropy climate",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Ford Foundation",
+          "handle": "FordFoundation",
+          "category": "Philanthropic Corporation",
+          "notes": "Social justice philanthropy",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 2,
+      "responseStrategy": "moderate"
+    },
+    {
+      "name": "Corporate Greenwashing",
+      "accounts": [
+        {
+          "name": "Larry Fink",
+          "handle": "laurencedfi nk",
+          "category": "Corporate Greenwashing",
+          "notes": "BlackRock CEO ESG promoter",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Klaus Schwab",
+          "handle": "ProfKlausSchwab",
+          "category": "Corporate Greenwashing",
+          "notes": "WEF founder",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Jamie Dimon",
+          "handle": "jpmorgan",
+          "category": "Corporate Greenwashing",
+          "notes": "JPMorgan CEO",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 1,
+      "responseStrategy": "minimal"
+    },
+    {
+      "name": "Corporate Greenwashing / Climate",
+      "accounts": [
+        {
+          "name": "Al Gore",
+          "handle": "AlGore",
+          "category": "Corporate Greenwashing / Climate",
+          "notes": "Former VP climate activist",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 1,
+      "responseStrategy": "minimal"
+    },
+    {
+      "name": "Corporate Greenwashing / Tech",
+      "accounts": [
+        {
+          "name": "Bill Gates",
+          "handle": "BillGates",
+          "category": "Corporate Greenwashing / Tech",
+          "notes": "Microsoft founder climate investor",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Jeff Bezos",
+          "handle": "JeffBezos",
+          "category": "Corporate Greenwashing / Tech",
+          "notes": "Amazon founder climate pledges",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 1,
+      "responseStrategy": "minimal"
+    },
+    {
+      "name": "Financial Corporation",
+      "accounts": [
+        {
+          "name": "BlackRock",
+          "handle": "BlackRock",
+          "category": "Financial Corporation",
+          "notes": "World's largest asset manager ESG leader",
+          "hasValidHandle": true
+        },
+        {
+          "name": "JPMorgan Chase",
+          "handle": "jpmorgan",
+          "category": "Financial Corporation",
+          "notes": "Investment banking greenwashing",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Goldman Sachs",
+          "handle": "GoldmanSachs",
+          "category": "Financial Corporation",
+          "notes": "Investment banking",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Morgan Stanley",
+          "handle": "MorganStanley",
+          "category": "Financial Corporation",
+          "notes": "Investment banking",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Citigroup",
+          "handle": "Citi",
+          "category": "Financial Corporation",
+          "notes": "Global banking",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Bank of America",
+          "handle": "BankofAmerica",
+          "category": "Financial Corporation",
+          "notes": "Banking financial services",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Wells Fargo",
+          "handle": "WellsFargo",
+          "category": "Financial Corporation",
+          "notes": "Banking financial services",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Vanguard",
+          "handle": "Vanguard_Group",
+          "category": "Financial Corporation",
+          "notes": "Asset management ESG funds",
+          "hasValidHandle": true
+        },
+        {
+          "name": "State Street",
+          "handle": "StateStreet",
+          "category": "Financial Corporation",
+          "notes": "Asset management ESG advocacy",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Fidelity",
+          "handle": "Fidelity",
+          "category": "Financial Corporation",
+          "notes": "Asset management retirement",
+          "hasValidHandle": true
+        },
+        {
+          "name": "HSBC",
+          "handle": "HSBC",
+          "category": "Financial Corporation",
+          "notes": "Global banking greenwashing",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 1,
+      "responseStrategy": "minimal"
+    },
+    {
+      "name": "Consulting Corporation",
+      "accounts": [
+        {
+          "name": "McKinsey & Company",
+          "handle": "McKinsey",
+          "category": "Consulting Corporation",
+          "notes": "Management consulting greenwashing",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Boston Consulting",
+          "handle": "BCG",
+          "category": "Consulting Corporation",
+          "notes": "Strategy consulting sustainability",
+          "hasValidHandle": true
+        },
+        {
+          "name": "Deloitte",
+          "handle": "DeloitteUS",
+          "category": "Consulting Corporation",
+          "notes": "Big Four sustainability consulting",
+          "hasValidHandle": true
+        },
+        {
+          "name": "PwC",
+          "handle": "PwC",
+          "category": "Consulting Corporation",
+          "notes": "Big Four ESG advisory",
+          "hasValidHandle": true
+        },
+        {
+          "name": "EY",
+          "handle": "EYnews",
+          "category": "Consulting Corporation",
+          "notes": "Big Four climate services",
+          "hasValidHandle": true
+        },
+        {
+          "name": "KPMG",
+          "handle": "KPMG",
+          "category": "Consulting Corporation",
+          "notes": "Big Four ESG reporting",
+          "hasValidHandle": true
+        }
+      ],
+      "priority": 1,
+      "responseStrategy": "minimal"
+    }
+  ],
+  "batchSettings": {
+    "highPriorityInterval": 30,
+    "mediumPriorityInterval": 60,
+    "lowPriorityInterval": 120,
+    "maxTweetsPerBatch": 10,
+    "maxAPICallsPerHour": 30
+  }
+}

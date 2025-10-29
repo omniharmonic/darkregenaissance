@@ -1,6 +1,7 @@
 import { twitterClient, type TweetData } from './client';
 import { generateResponse } from '../services/ai';
 import { db } from '../services/database';
+import { targetAccountMonitor } from './account-monitor';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -133,6 +134,15 @@ class TwitterMonitor {
         return;
       }
 
+      // Get full thread context for better AI responses
+      console.log('🧵 Getting thread context for mention...');
+      const threadContext = await twitterClient.getThreadContext(tweet.id, 10);
+
+      console.log(`📝 Thread context includes ${threadContext.threadTweets.length} tweets`);
+      if (threadContext.threadTweets.length > 1) {
+        console.log(`🔍 Full context: ${threadContext.totalContext.slice(0, 200)}...`);
+      }
+
       // Create conversation in database
       const conversationId = await db.createConversation(
         'twitter',
@@ -141,6 +151,8 @@ class TwitterMonitor {
         {
           tweetText: tweet.text,
           tweetCreatedAt: tweet.createdAt,
+          threadContext: threadContext.totalContext,
+          threadLength: threadContext.threadTweets.length,
           source: 'twitter_monitor'
         }
       );
@@ -149,13 +161,15 @@ class TwitterMonitor {
         throw new Error('Failed to create conversation in database');
       }
 
-      // Add user message to conversation
-      await db.addMessage(conversationId, 'user', tweet.text, {
+      // Add user message to conversation (include thread context)
+      await db.addMessage(conversationId, 'user', threadContext.totalContext, {
         tweetId: tweet.id,
-        authorId: tweet.authorId
+        authorId: tweet.authorId,
+        originalTweet: tweet.text,
+        threadLength: threadContext.threadTweets.length
       });
 
-      // Create conversation context for AI generation (legacy format)
+      // Create conversation context for AI generation with full thread context
       const conversation = {
         id: conversationId,
         platform: 'twitter' as const,
@@ -163,7 +177,9 @@ class TwitterMonitor {
         messages: [{
           id: crypto.randomUUID(),
           role: 'user' as const,
-          content: tweet.text,
+          content: threadContext.threadTweets.length > 1
+            ? `Thread context:\n${threadContext.totalContext}\n\nI was mentioned in the last tweet. Please respond appropriately to the conversation.`
+            : tweet.text,
           timestamp: new Date().toISOString()
         }],
         createdAt: new Date().toISOString()
@@ -387,33 +403,42 @@ class TwitterMonitor {
     console.log('🚀 Starting Twitter monitor...');
     console.log(`📊 Config: ${JSON.stringify(this.config, null, 2)}`);
 
+    // Start target account monitoring system
+    console.log('🎯 Starting target account monitor...');
+    await targetAccountMonitor.start();
+
     // Check mentions every 15 minutes (max rate for free tier)
     const mentionInterval = setInterval(async () => {
       await this.checkMentions();
     }, 15 * 60 * 1000);
 
-    // Check watched accounts every 30 minutes (due to rate limits)
-    const accountInterval = setInterval(async () => {
-      await this.checkWatchedAccounts();
-    }, 30 * 60 * 1000);
+    // Legacy watched accounts (now replaced by target account monitor)
+    // const accountInterval = setInterval(async () => {
+    //   await this.checkWatchedAccounts();
+    // }, 30 * 60 * 1000);
 
     this.intervals.push(mentionInterval);
-    this.intervals.push(accountInterval);
+    // this.intervals.push(accountInterval);
 
     // Schedule daily tweets
     this.scheduleDailyTweets();
 
     // Do initial checks
     await this.checkMentions();
-    if (this.config.watchedAccounts.length > 0) {
-      await this.checkWatchedAccounts();
-    }
+    // Legacy: if (this.config.watchedAccounts.length > 0) {
+    //   await this.checkWatchedAccounts();
+    // }
   }
 
   stop(): void {
     if (!this.isRunning) return;
 
     console.log('⏹️ Stopping Twitter monitor...');
+
+    // Stop target account monitor
+    targetAccountMonitor.stop();
+
+    // Clear all intervals
     this.intervals.forEach(interval => clearInterval(interval));
     this.intervals = [];
     this.isRunning = false;
