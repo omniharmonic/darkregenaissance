@@ -35,9 +35,8 @@ export async function POST(request: NextRequest) {
     // 1. ENHANCED MENTION MONITORING with Thread Context
     console.log('🔍 Running enhanced mention monitoring...');
     try {
-      await twitterMonitor.checkMentions();
-      results.push('✅ Mention monitoring completed');
-      processedMentions = 1; // Will be updated by actual processing
+      processedMentions = await twitterMonitor.checkMentions();
+      results.push(`✅ Mention monitoring completed: ${processedMentions} processed`);
     } catch (error) {
       console.error('Error in mention monitoring:', error);
       errors.push(`Mention monitoring: ${error}`);
@@ -59,9 +58,11 @@ export async function POST(request: NextRequest) {
           console.log('🎯 Target account monitor not running, triggering manual check...');
           // Manually trigger a batch check for high-priority accounts
           await triggerHighPriorityCheck();
-          processedTargetAccounts = 1;
+          processedTargetAccounts = 1; // We triggered a manual check
+          results.push('✅ Target account monitor started');
         } else {
           results.push('✅ Target account monitor already running');
+          processedTargetAccounts = 0; // No new processing triggered
         }
       }
     } catch (error) {
