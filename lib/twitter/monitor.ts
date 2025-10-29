@@ -78,7 +78,9 @@ class TwitterMonitor {
     );
   }
 
-  async checkMentions(): Promise<void> {
+  async checkMentions(): Promise<number> {
+    let processedCount = 0;
+
     try {
       console.log('🔍 Checking for mentions...');
 
@@ -86,7 +88,7 @@ class TwitterMonitor {
       const canRead = await db.checkUsageLimit('twitter', 'read', 100);
       if (!canRead) {
         console.log('⏰ Twitter read limit reached for today');
-        return;
+        return 0;
       }
 
       // Use single search query to avoid rate limiting (Twitter free API: 1 search per 15 minutes)
@@ -111,12 +113,13 @@ class TwitterMonitor {
 
           console.log(`📢 New mention found: ${tweet.text.slice(0, 100)}...`);
           await this.respondToMention(tweet);
+          processedCount++;
         }
       } catch (searchError: unknown) {
         const error = searchError as { message?: string; code?: number };
         if (error.message?.includes('429') || error.code === 429) {
           console.log('⏰ Rate limit reached - will try again in 15 minutes');
-          return; // Gracefully exit on rate limit
+          return processedCount; // Return count even on rate limit
         }
         throw searchError; // Re-throw other errors
       }
@@ -124,6 +127,9 @@ class TwitterMonitor {
     } catch (error) {
       console.error('Error checking mentions:', error);
     }
+
+    console.log(`📊 Processed ${processedCount} mentions`);
+    return processedCount;
   }
 
   async respondToMention(tweet: TweetData): Promise<void> {
