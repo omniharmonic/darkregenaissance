@@ -23,9 +23,12 @@ export default function AdminLogin() {
 
       if (response.ok) {
         router.push('/admin');
+        router.refresh();
       } else {
         const data = await response.json();
-        setError(data.error || 'Authentication failed');
+        const errorMessage = data.error || 'Authentication failed';
+        console.error('Auth failed:', errorMessage, 'Status:', response.status);
+        setError(errorMessage);
       }
     } catch {
       setError('Connection error');
