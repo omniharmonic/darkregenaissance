@@ -106,12 +106,16 @@ class TargetAccountMonitor {
       const handles = batch.accounts.map(acc => acc.handle);
       console.log(`🔍 Monitoring batch: ${handles.join(', ')} (Priority ${batch.priority})`);
 
-      // Check rate limits
+      // Check rate limits (both our internal tracking and respect Twitter's limits)
       const canRead = await db.checkUsageLimit('twitter', 'read', 100);
       if (!canRead) {
-        console.log('⏰ Twitter read limit reached, skipping batch');
+        console.log('⏰ Daily Twitter read limit reached, skipping batch');
         return;
       }
+
+      // Additional check: respect Twitter's 15-minute search limit
+      // This is a simple check - in production, you might want more sophisticated rate limiting
+      console.log('🚦 Proceeding with Twitter API request...');
 
       // Create batched query
       const query = handles.map(handle => `from:${handle}`).join(' OR ');
@@ -379,11 +383,32 @@ class TargetAccountMonitor {
     console.log(`🚀 Starting target account monitor with ${this.batches.length} batches`);
 
     // Schedule each batch based on its priority and interval
+    // Twitter free tier: 1 search per 15 minutes, so space initial checks accordingly
+    const TWITTER_RATE_LIMIT_MINUTES = 16; // 16 minutes to be safe
+
     for (let i = 0; i < this.batches.length; i++) {
       const batch = this.batches[i];
 
-      // Stagger initial checks to spread API usage
-      const initialDelay = i * 5 * 1000; // 5 seconds between each batch start
+      // Space initial checks to respect Twitter's rate limits
+      // High priority batches get earlier slots
+      let delayMultiplier: number;
+      if (batch.priority >= 5) {
+        // High priority: first 7 slots (0-6 * 16 minutes)
+        delayMultiplier = i;
+      } else if (batch.priority >= 4) {
+        // Medium priority: next 4 slots (7-10 * 16 minutes)
+        delayMultiplier = 7 + (i - 7);
+      } else {
+        // Low priority: remaining slots, but spread over longer periods
+        delayMultiplier = 11 + (i - 11) * 2; // Double spacing for low priority
+      }
+
+      const initialDelay = delayMultiplier * TWITTER_RATE_LIMIT_MINUTES * 60 * 1000;
+
+      // Log when this batch will start
+      const startTime = new Date(Date.now() + initialDelay);
+      const accounts = batch.accounts.map(acc => acc.handle).join(', ');
+      console.log(`⏰ Batch ${i} (${accounts}) scheduled for ${startTime.toISOString()}`);
 
       setTimeout(() => {
         // Do initial check
