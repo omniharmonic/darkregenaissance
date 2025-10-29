@@ -1,0 +1,14 @@
+/* Admin-specific CSS overrides */
+body {
+  position: static !important;
+  overflow: auto !important;
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+/* Ensure admin pages can scroll normally */
+#__next {
+  height: auto !important;
+  min-height: 100vh;
+}
+
