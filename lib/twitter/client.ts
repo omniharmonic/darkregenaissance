@@ -178,8 +178,7 @@ class TwitterClient {
       const client = this.initializeClient();
       const response = await client.v2.search(`conversation_id:${conversationId}`, {
         max_results: Math.min(maxTweets, 100), // API limit is 100
-        'tweet.fields': ['created_at', 'author_id', 'in_reply_to_user_id', 'conversation_id'],
-        sort_order: 'chronological'
+        'tweet.fields': ['created_at', 'author_id', 'in_reply_to_user_id', 'conversation_id']
       });
 
       await this.trackUsage('read');
