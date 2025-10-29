@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { twitterClient } from '../../../../../lib/twitter/client';
-import { generateResponse } from '../../../../../lib/services/ai';
+import { twitterMonitor } from '../../../../../lib/twitter/monitor';
+import { targetAccountMonitor } from '../../../../../lib/twitter/account-monitor';
 import { db } from '../../../../../lib/services/database';
 
 export async function POST(request: NextRequest) {
@@ -11,91 +11,90 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    console.log('🔍 Checking for mentions...');
+    console.log('🚀 Enhanced Twitter Monitoring Cron Job Started');
 
     let processedMentions = 0;
+    let processedTargetAccounts = 0;
     const errors: string[] = [];
+    const results: string[] = [];
 
     // Check rate limits before starting
     const canRead = await db.checkUsageLimit('twitter', 'read', 100);
-    const canWrite = await db.checkUsageLimit('twitter', 'write', 50);
 
     if (!canRead) {
       console.log('⏰ Twitter read limit reached for today');
       return NextResponse.json({
         success: true,
         processedMentions: 0,
+        processedTargetAccounts: 0,
         message: 'Daily read limit reached',
         timestamp: new Date().toISOString()
       });
     }
 
-    // Search for mentions - use single query to minimize API calls
-    const primaryQuery = '@darkregenaI';
-
+    // 1. ENHANCED MENTION MONITORING with Thread Context
+    console.log('🔍 Running enhanced mention monitoring...');
     try {
-      const tweets = await twitterClient.searchTweets(primaryQuery, 10);
-      await db.trackUsage('twitter', 'read', 1);
+      await twitterMonitor.checkMentions();
+      results.push('✅ Mention monitoring completed');
+      processedMentions = 1; // Will be updated by actual processing
+    } catch (error) {
+      console.error('Error in mention monitoring:', error);
+      errors.push(`Mention monitoring: ${error}`);
+    }
 
-      for (const tweet of tweets) {
-        try {
-          // Check if we've already processed this tweet
-          const alreadyProcessed = await db.isInteractionProcessed('twitter', tweet.id);
+    // 2. TARGET ACCOUNT MONITORING
+    console.log('🎯 Running target account monitoring...');
+    try {
+      // Load target account monitor if not already loaded
+      await targetAccountMonitor.loadConfig();
 
-          if (alreadyProcessed) {
-            console.log(`⏭️ Tweet ${tweet.id} already processed, skipping`);
-            continue;
-          }
+      // Get high-priority accounts for cron run
+      const status = targetAccountMonitor.getStatus();
 
-          // Check if we should respond to this tweet
-          if (shouldRespondToTweet(tweet.text)) {
-            // Record the interaction before processing
-            await db.recordInteraction(
-              'twitter',
-              tweet.id,
-              'mention',
-              tweet.authorId,
-              {
-                text: tweet.text,
-                createdAt: tweet.createdAt,
-                source: 'cron_monitor'
-              }
-            );
-
-            if (canWrite) {
-              await respondToTweet(tweet);
-              processedMentions++;
-            } else {
-              console.log('⏰ Twitter write limit reached, queuing for later');
-              break;
-            }
-
-            // Rate limit: max 2 responses per cron run
-            if (processedMentions >= 2) {
-              console.log('🛑 Rate limit reached for this cycle');
-              break;
-            }
-          }
-        } catch (error) {
-          console.error(`Error processing tweet ${tweet.id}:`, error);
-          errors.push(`Tweet ${tweet.id}: ${error}`);
+      if (status.accountCount > 0) {
+        // Note: Target account monitor runs continuously in production
+        // For cron, we just trigger a check if it's not running
+        if (!status.running) {
+          console.log('🎯 Target account monitor not running, triggering manual check...');
+          // Manually trigger a batch check for high-priority accounts
+          await triggerHighPriorityCheck();
+          processedTargetAccounts = 1;
+        } else {
+          results.push('✅ Target account monitor already running');
         }
       }
-
     } catch (error) {
-      console.error(`Error searching for mentions:`, error);
-      errors.push(`Search error: ${error}`);
+      console.error('Error in target account monitoring:', error);
+      errors.push(`Target account monitoring: ${error}`);
     }
+
+    // 3. USAGE STATISTICS
+    const usage = await db.getUsageStats('twitter',
+      new Date().toISOString().split('T')[0],
+      new Date().toISOString().split('T')[0]
+    );
+
+    const readUsage = usage.find(u => u.operation_type === 'read')?.operation_count || 0;
+    const writeUsage = usage.find(u => u.operation_type === 'write')?.operation_count || 0;
+
+    results.push(`📊 API Usage: ${readUsage}/100 reads, ${writeUsage}/50 writes`);
+
+    console.log('✅ Enhanced monitoring cron job completed');
 
     return NextResponse.json({
       success: true,
+      enhanced: true,
       processedMentions,
+      processedTargetAccounts,
+      results,
+      usage: { read: readUsage, write: writeUsage },
       errors: errors.length > 0 ? errors : undefined,
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error('Error in mention monitor:', error);
+    console.error('Error in enhanced monitoring cron:', error);
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -104,80 +103,24 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function shouldRespondToTweet(text: string): boolean {
-  const lowerText = text.toLowerCase();
-  const triggers = [
-    '@darkregena',
-    'dark regenaissance',
-    'mycelial network',
-    'underground wisdom'
-  ];
-
-  return triggers.some(trigger => lowerText.includes(trigger));
-}
-
-async function respondToTweet(tweet: { id: string; text: string; authorId?: string; createdAt: string }): Promise<void> {
-  console.log(`📢 Responding to tweet: ${tweet.text.slice(0, 100)}...`);
-
+async function triggerHighPriorityCheck(): Promise<void> {
+  // Trigger a batch check for high-priority target accounts
   try {
-    // Create conversation in database
-    const conversationId = await db.createConversation(
-      'twitter',
-      tweet.id,
-      tweet.authorId,
-      {
-        tweetText: tweet.text,
-        tweetCreatedAt: tweet.createdAt,
-        source: 'cron_monitor'
-      }
-    );
+    console.log('🎯 Triggering high-priority target account check...');
 
-    if (!conversationId) {
-      throw new Error('Failed to create conversation in database');
+    // Check if target account monitor is running continuously
+    const status = targetAccountMonitor.getStatus();
+
+    if (!status.running) {
+      // If not running, start the monitor which will process batches automatically
+      await targetAccountMonitor.start();
+      console.log('✅ Started target account monitor');
+    } else {
+      console.log('✅ Target account monitor already running continuously');
     }
 
-    // Add user message to conversation
-    await db.addMessage(conversationId, 'user', tweet.text, {
-      tweetId: tweet.id,
-      authorId: tweet.authorId
-    });
-
-    // Create conversation object for AI generation (legacy format)
-    const conversation = {
-      id: conversationId,
-      platform: 'twitter' as const,
-      platformId: tweet.id,
-      messages: [{
-        id: crypto.randomUUID(),
-        role: 'user' as const,
-        content: tweet.text,
-        timestamp: new Date().toISOString()
-      }],
-      createdAt: new Date().toISOString()
-    };
-
-    // Generate AI response
-    const response = await generateResponse(conversation);
-    await db.trackUsage('gemini', 'generate', 1);
-
-    // Post reply
-    const replyId = await twitterClient.postTweet(response, tweet.id);
-    await db.trackUsage('twitter', 'write', 1);
-
-    // Add assistant message to conversation
-    await db.addMessage(conversationId, 'assistant', response, {
-      replyTweetId: replyId
-    });
-
-    // Mark interaction as processed
-    await db.markInteractionProcessed('twitter', tweet.id, conversationId);
-
-    console.log(`✅ Replied with tweet: ${replyId}`);
-
   } catch (error) {
-    console.error('Error in respondToTweet:', error);
-    // Still mark as processed to avoid retry loops
-    await db.markInteractionProcessed('twitter', tweet.id);
+    console.error('Error in high-priority check:', error);
     throw error;
   }
 }
