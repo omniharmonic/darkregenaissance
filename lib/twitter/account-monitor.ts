@@ -343,20 +343,25 @@ class TargetAccountMonitor {
     return category?.responseStrategy || 'moderate';
   }
 
-  private generateResponsePrompt(account: TargetAccount, threadContext: any): string {
+  private generateResponsePrompt(account: TargetAccount, threadContext: {
+    currentTweet: TweetData;
+    threadTweets: TweetData[];
+    totalContext: string;
+  }): string {
     const strategy = this.getResponseStrategyForAccount(account);
     const baseContext = threadContext.threadTweets.length > 1
       ? `Thread context from @${account.handle}:\n${threadContext.totalContext}`
       : `Tweet from @${account.handle}: ${threadContext.currentTweet.text}`;
 
-    const strategyInstructions = {
+    const strategyInstructions: Record<string, string> = {
       'aggressive': 'Engage boldly and substantively with their ideas. Show deep understanding and offer compelling perspectives.',
       'moderate': 'Engage thoughtfully and respectfully. Find common ground while adding valuable insights.',
       'conservative': 'Engage carefully and respectfully. Focus on understanding their perspective and asking thoughtful questions.',
       'minimal': 'Engage minimally and only if the content is exceptionally relevant to our mission.'
     };
 
-    return `${baseContext}\n\nThis is from ${account.name} (${account.category}). ${account.notes}\n\nResponse strategy: ${strategy}\nInstructions: ${strategyInstructions[strategy] || strategyInstructions.moderate}\n\nRespond appropriately to their post.`;
+    const instruction = strategyInstructions[strategy] || strategyInstructions['moderate'];
+    return `${baseContext}\n\nThis is from ${account.name} (${account.category}). ${account.notes}\n\nResponse strategy: ${strategy}\nInstructions: ${instruction}\n\nRespond appropriately to their post.`;
   }
 
   async start(): Promise<void> {

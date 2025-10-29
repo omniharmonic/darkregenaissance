@@ -233,8 +233,8 @@ async function main() {
     }
   };
 
-  if (commands[command]) {
-    await commands[command]();
+  if (command && commands[command as keyof typeof commands]) {
+    await commands[command as keyof typeof commands]();
   } else {
     commands.help();
   }
