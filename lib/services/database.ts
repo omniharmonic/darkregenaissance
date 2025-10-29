@@ -25,7 +25,7 @@ export interface Interaction {
   id: string;
   platform: 'web' | 'telegram' | 'twitter';
   platform_interaction_id: string;
-  interaction_type: 'mention' | 'reply' | 'direct_message' | 'post' | 'comment';
+  interaction_type: 'mention' | 'reply' | 'direct_message' | 'post' | 'comment' | 'watch' | 'target_account_response' | 'filtered';
   user_id?: string;
   processed: boolean;
   response_sent: boolean;
