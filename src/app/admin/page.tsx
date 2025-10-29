@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import AdminPageWrapper from './page-wrapper';
 import ConversationsTab from '@/components/admin/ConversationsTab';
 import AccountsTab from '@/components/admin/AccountsTab';
 import MonitoringTab from '@/components/admin/MonitoringTab';
@@ -44,31 +45,12 @@ export default function AdminDashboard() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check authentication on mount
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/api/admin/stats');
-        if (response.status === 401) {
-          router.push('/admin/login');
-          return;
-        }
-        setIsAuthenticated(true);
-      } catch {
-        router.push('/admin/login');
-      }
-    };
-    checkAuth();
-  }, [router]);
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
     fetchDashboardData();
     const interval = setInterval(fetchDashboardData, 30000); // Refresh every 30s
     return () => clearInterval(interval);
-  }, [isAuthenticated]);
+  }, []);
 
   const fetchDashboardData = async () => {
     try {
@@ -132,18 +114,8 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-slate-400">Checking authentication...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
+    <AdminPageWrapper>
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
       <header className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700">
@@ -299,6 +271,7 @@ export default function AdminDashboard() {
         {activeTab === 'analytics' && <AnalyticsTab />}
       </main>
     </div>
+    </AdminPageWrapper>
   );
 }
 
