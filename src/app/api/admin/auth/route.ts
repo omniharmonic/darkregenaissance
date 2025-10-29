@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
+      path: '/',
       maxAge: 24 * 60 * 60 // 24 hours
     });
 
@@ -44,6 +45,23 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Auth error:', error);
     return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    // Check if user is authenticated
+    const cookieStore = cookies();
+    const authCookie = cookieStore.get('admin-auth');
+
+    if (authCookie) {
+      return NextResponse.json({ authenticated: true });
+    }
+
+    return NextResponse.json({ authenticated: false }, { status: 401 });
+  } catch (error) {
+    console.error('Auth check error:', error);
+    return NextResponse.json({ authenticated: false }, { status: 500 });
   }
 }
 
